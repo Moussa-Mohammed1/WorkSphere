@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
     <title>WorkSphere</title>
 </head>
 <body
@@ -26,13 +27,13 @@
                     <h2 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-users text-xl text-gray-700"></i> Unassigned Staff</h2>
                     <span 
                         id="number-unassigned"
-                        class="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-sm font-semibold">1</span>
+                        class="bg-orange-100 aspe text-orange-600 px-3 py-1 rounded-full text-sm font-semibold">1</span>
                 </div>
                 <div
                     id="unassigned-list"
-                    class="hidden flex flex-col gap-3">
-                    <div class="  space-y-3 max-h-[600px] overflow-y-auto">
-                        <div class="employee-card bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+                    class="hidden flex fade-in flex-col gap-3">
+                    <div class=" space-y-3 max-h-[600px] overflow-y-auto">
+                        <div class=" bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
                             <div class="flex items-center space-x-3">
                                 <div class="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
                                     SA
@@ -59,18 +60,22 @@
     </aside>
     <section    
         id="new-staff"
-        class="inset-0 hidden fixed overflow-y-auto bg-black/50 flex items-center pt-30 lg:pt-20 justify-center">
+        class="inset-0 hidden fixed  bg-black/50 flex items-center py-10 justify-center">
         <form
-            class="bg-white animation-popup mt-30 px-4 py-3 rounded-2xl w-3/5 lg:w-[35%]">
+            class="bg-white fade-in h-5/5 overflow-y-scroll [scrollbar-width:none]  px-4 py-3 rounded-2xl w-3/5 lg:w-[35%]">
             <label for="name" class="font-semibold">*Name : </label>
             <input id="name" type="text" placeholder="Name" 
-                class="outline-none ring rounded-lg mb-5 focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+                class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+            <p class="error-message mb-5 text-sm text-red-500"></p>
             <label for="email" class="font-semibold ">*Email :</label>
             <input id="email" type="text" placeholder="Email" 
-                class="outline-none ring rounded-lg mb-5 focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+                class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+            <!-- error message -->
+            <p class="error-message mb-5 text-sm text-red-500"></p>
             <label for="phone" class="font-semibold">*Phone :</label>
             <input type="text" id="phone" placeholder="Phone"
-                class="outline-none ring rounded-lg mb-5 focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+                class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+            <p class="error-message mb-5 text-sm text-red-500"></p>
             <label for="role"    class="font-semibold">*Role : </label>
             <select id="role"   
                     class="hover:bg-blue-50 outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500 ">
@@ -95,7 +100,13 @@
                         class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 duration-500 w-5/5 p-2">
             </div>
             <div>
+                <div
+                    id="experiences">
+                    
+                </div>
+
                 <button
+                    
                     id="staff-experience"
                     class="w-fit cursor-pointer mt-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
                      text-white font-semibold px-1 py-2  rounded-lg shadow-md transition duration-300 "
