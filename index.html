@@ -12,16 +12,17 @@
     class="flex flex-col justify-between bg-black lg:flex-row min-h-screen">
     <aside
         class="order-last justify-end lg:order-first lg:w-[30%] bg-black py-4 lg:pr-3">
-       <div class="bg-white rounded-2xl shadow-lg p-6 fade-in">
+       <div class="bg-white flex flex-col gap-3 rounded-2xl shadow-lg p-6 fade-in">
             <div class="bg-black/10 focus-within:bg-black/20 focus-within:ring-blue-500 focus-within:ring-2 rounded-xl p-3 flex items-center justify-between mb-4">
                 <input 
+                    id="search-staff"
                     class="outline-none"
                     type="text" placeholder="search">
             </div>
             <div>
                 <div 
                     id="unassigned-toggle"
-                    class="hover:bg-black/20 rounded-xl p-3 flex items-center justify-between mb-4">
+                    class="hover:bg-black/20 cursor-pointer rounded-xl p-3 flex items-center justify-between mb-4">
                     <h2 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-users text-xl text-gray-700"></i> Unassigned Staff</h2>
                     <span 
                         id="number-unassigned"
@@ -29,7 +30,7 @@
                 </div>
                 <div
                     id="unassigned-list"
-                    class="hidden">
+                    class="hidden flex flex-col gap-3">
                     <div class="  space-y-3 max-h-[600px] overflow-y-auto">
                         <div class="employee-card bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
                             <div class="flex items-center space-x-3">
@@ -49,16 +50,18 @@
             <div>
                 <button 
                     id="add-staff"
-                    class="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition duration-300 mb-4">
+                    class="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+                     text-white cursor-pointer font-semibold py-3 px-4 rounded-xl shadow-md transition duration-300 mb-4">
                     + Add new worker
                 </button>
             </div>
         </div>
     </aside>
-    <section
-        class="inset-0 fixed overflow-y-auto bg-black/50 flex items-center p-7 justify-center">
+    <section    
+        id="new-staff"
+        class="inset-0 hidden fixed overflow-y-auto bg-black/50 flex items-center pt-30 lg:pt-20 justify-center">
         <form
-            class="bg-white p-6 rounded-2xl w-4/5 lg:w-2/5">
+            class="bg-white animation-popup mt-30 px-4 py-3 rounded-2xl w-3/5 lg:w-[35%]">
             <label for="name" class="font-semibold">*Name : </label>
             <input id="name" type="text" placeholder="Name" 
                 class="outline-none ring rounded-lg mb-5 focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
@@ -67,17 +70,51 @@
                 class="outline-none ring rounded-lg mb-5 focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
             <label for="phone" class="font-semibold">*Phone :</label>
             <input type="text" id="phone" placeholder="Phone"
-                class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
-
+                class="outline-none ring rounded-lg mb-5 focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+            <label for="role"    class="font-semibold">*Role : </label>
+            <select id="role"   
+                    class="hover:bg-blue-50 outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500 ">
+                <option>Technicien IT</option>
+                <option>Réceptionniste</option>
+                <option>Agent de sécurite</option>
+                <option>Manager</option>
+                <option>Nettoyage</option>
+                <option>Autres roles</option>
+            </select>
             <div
                 class="flex flex-col gap-3 justify-center items-center mt-3.5">
+
                 <img 
                     class="rounded-full lg:w-40 w-35 border-2 border-green-500 "
                     id="staff-image"
                     src="https://i.pinimg.com/1200x/6e/59/95/6e599501252c23bcf02658617b29c894.jpg" alt="profile-page">
                     <label for="image-url"></label>
-                    <input type="text" placeholder="http://image.example.com"
+                    <input 
+                        id="image-url"
+                        type="text" placeholder="http://image.example.com"
                         class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 duration-500 w-5/5 p-2">
+            </div>
+            <div>
+                <button
+                    id="staff-experience"
+                    class="w-fit cursor-pointer mt-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+                     text-white font-semibold px-1 py-2  rounded-lg shadow-md transition duration-300 "
+                    >+ Add Experience</button>
+            </div>
+            <div
+                class="flex gap-4 flex-row-reverse">
+                <button
+                    id="save"
+                    class="w-fit cursor-pointer mt-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+                     text-white font-semibold px-5   rounded-lg shadow-md transition duration-300">
+                    Save
+                </button>
+                <button
+                    id="cancel"
+                    class="w-fit cursor-pointer mt-3 bg-gray-200 focus:bg-gray-300
+                     text-black font-semibold px-2 py-1  rounded-lg shadow-md transition duration-300">
+                    Cancel
+                </button>
             </div>
         </form>
     </section>
