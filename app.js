@@ -102,7 +102,6 @@ const experienceForms = document.getElementById('experiences');
 function newExp() {
     const exp = document.createElement('div');
     exp.className = 'experience-item flex  flex-col gap-2 p-3 mt-3 rounded-xl border border-gray-300 bg-gray-50';
-
     exp.innerHTML = `
         <div class="flex flex-row-reverse">
             <button
@@ -169,6 +168,43 @@ staffExp.addEventListener('click',(e)=>{
     newExp();
 })
 
+function staffList(s){
+     return `
+    <div 
+        onclick="logit()"
+        class=" bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+        <div class="flex items-center space-x-3">
+            <img src="${s.image}" class="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+            <div class="flex-1">
+                <h3 class="font-semibold text-gray-800">${s.nom}</h3>
+                <p class="text-sm text-gray-500">${s.role}</p>
+            </div>
+        </div>
+    </div>`;
+}
+function updateList(update){
+    list.innerHTML = update.map(staffList).join("");
+    unassignedCount.textContent = workers.length;
+}
+function logit(){
+    console.log('hahahahaahah');
+    
+}
+
+function clearForm(){
+    staffName.value = "";
+    staffPhone.value = "";
+    staffEmail.value = "";
+    imgUrl.value = "";
+};
+
+function checkDuplicate(staff){
+    for (let i = 0; i < workers.length ; i++) {
+        if (staff.nom === workers[i].nom) {
+            alert('catch you haha !olreadi igzist!');
+        }
+    }
+}
 const expArray = document.getElementsByClassName('experience-item');
 saveBtn.addEventListener('click', (e)=>{
     e.preventDefault();
@@ -176,20 +212,43 @@ saveBtn.addEventListener('click', (e)=>{
         return;
     }
     staff.nom = staffName.value;
+    checkDuplicate(staff);
     staff.role = staffRole.value;
     staff.image = profilImg.src;
     staff.email = staffEmail.value;
     staff.phone = staffPhone.value;
     for (let i = 0; i < expArray.length; i++) {
         const item  = expArray[i];
-        experience.title = item.querySelector('[name="exp-title"]').value.trim();
-        experience.company = item.querySelector('[name="exp-company"]').value.trim();
-        experience.startDate = item.querySelector('[name="start-date"]').value.trim();
-        experience.endDate = item.querySelector('[name="end-date"]').value.trim();
-        experience.description = item.querySelector('[name="exp-description"]').value || "this experience has no description";
-        staff.experiences.unshift(experience);
+        const startV =  item.querySelector('[name="start-date"]').value.trim();
+        const endV = item.querySelector('[name="end-date"]').value.trim();
+
+        if (!startDateRegex.test(startV) || !endDateRegex.test(endV) ) {
+            if (!startDateRegex.test(startV)) {
+                const closestError = item.querySelector('[name="start-date"]').nextElementSibling;
+                showError(closestError, "invalid value, must be a logic year(1990-2025)");
+                return;
+            }
+            if(!endDateRegex.test(endV)){
+                const closestError = item.querySelector('[name="end-date"]').nextElementSibling;
+                showError(closestError, "invalid value, must be a logic year(1990-2025)");
+                return;
+            }
+        }
+        staff.experiences.unshift({
+            title: item.querySelector('[name="exp-title"]').value.trim(),
+            company: item.querySelector('[name="exp-company"]').value.trim(),
+            startDate: startV,
+            endDate: endV,
+            description: item.querySelector('[name="exp-description"]').value.trim() || "this experience has no description"
+        });
+        clearError(errorClass);
     }
     
+    workers.push(staff);
+    updateList(workers);
+    console.log(workers);
+    modal.classList.add('hidden');
+    clearForm();
 });
 imgUrl.addEventListener('input',()=>{
     if (imgUrl.value) {
