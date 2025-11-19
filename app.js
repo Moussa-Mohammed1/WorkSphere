@@ -1,3 +1,5 @@
+
+
 const list =  document.getElementById('unassigned-list');
 const showList = document.getElementById('unassigned-toggle');
 const addStaff = document.getElementById('add-staff');
@@ -15,23 +17,11 @@ const staffName = document.getElementById("name");
 const modal = document.getElementById("new-staff");
 const errorClass = document.querySelectorAll('.error-message');
 
-let workers = [];
-let staff = {
-    id : Date.now(),
-    nom : "",
-    role : "",
-    image : "",
-    email : "", 
-    phone : "",
-    experiences : [],
-};
-let experience = {
-    title : "",
-    company : "",
-    startDate : "",
-    endDate : "",
-    description : ""
-};
+let workers = JSON.parse(localStorage.getItem('workers')) || [];
+saveToLocalstorage();
+function saveToLocalstorage(){
+ localStorage.setItem('workers',JSON.stringify(workers));
+}
 showList.addEventListener('click', ()=> {
     list.classList.toggle('hidden');
 });
@@ -94,9 +84,9 @@ function validateForm() {
     } else {
         clearError(errorClass[2]);
     }
-
     return valid;
 }
+
 const experienceForms = document.getElementById('experiences');
 
 function newExp() {
@@ -166,12 +156,12 @@ function closeIT(button){
 staffExp.addEventListener('click',(e)=>{
     e.preventDefault();
     newExp();
-})
+});
 
 function staffList(s){
      return `
     <div 
-        onclick="logit()"
+        onclick="showThisStaff(${s.id})"
         class=" bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
         <div class="flex items-center space-x-3">
             <img src="${s.image}" class="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
@@ -181,42 +171,133 @@ function staffList(s){
             </div>
         </div>
     </div>`;
-}
+};
 function updateList(update){
     list.innerHTML = update.map(staffList).join("");
     unassignedCount.textContent = workers.length;
 }
-function logit(){
-    console.log('hahahahaahah');
-    
+function sortExperiences(exp){
+    for (let i = 0; i < exp.length -1; i++) {
+        for (let j = 0; j < exp.length - i -1; j++) {
+            if (exp[j].startDate < exp[j + 1].startDate) {
+                let temp = exp[j];
+                exp[j] = exp[j + 1];
+                exp[j + 1] = temp;
+            }
+        }
+    }
+    return exp;
 }
+
+function showThisStaff(id){
+    
+    const shown = workers.find(staff => staff.id === id);
+    let shownExp = "";
+    for (let i = 0; i < shown.experiences.length; i++) {
+        let xp = shown.experiences[i];
+        shownExp += `
+            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate}-${xp.endDate})</li>
+        `
+    }
+    const info = document.createElement('div');
+    info.className = ' inset-0 fixed bg-black/50 flex flex-row justify-center items-center'
+    info.innerHTML = `
+    <div class="bg-gray-50 shown rounded-xl w-fit h-fit p-4 border-2 border-blue-400 cursor-pointer shadow-md transition duration-300">
+                <div class="flex items-center space-x-4">
+                    <img src="${shown.image}" 
+                        alt="${shown.nom}" 
+                        class="lg:w-24 lg:h-24 w-16 h-16 rounded-full border-2 border-blue-500 object-cover">
+                    <div class="flex flex-col">
+                        <h3 class="text-lg font-semibold text-gray-600 capitalize">full name : <span class="text-black font-semibold">${shown.nom}</span></h3>
+                        <p class="text-sm text-gray-600 capitalize">Current Role : <span class="text-black font-semibold">${shown.role}</span></p>
+                        <p class="text-sm text-gray-600 mt-1">Email: <span class="text-black font-semibold">${shown.email}</span></p>
+                        <p class="text-sm text-gray-600">Phone: <span class="text-black font-semibold">${shown.phone}</span></p>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <h4 class="font-semibold text-gray-700">Experiences:</h4>
+                    <ul class="list-disc list-inside text-sm text-gray-600 mt-1">
+                        ${shownExp}
+                    </ul>
+                </div>
+            </div>`
+    document.body.appendChild(info);
+    const card = info.firstElementChild;
+    info.addEventListener('click', (e)=>{
+        if (!card.contains(e.target)) {
+            info.remove();
+        }
+    });
+};
 
 function clearForm(){
     staffName.value = "";
     staffPhone.value = "";
     staffEmail.value = "";
     imgUrl.value = "";
+    for (let i = 0; i < expArray.length; i++) {
+        const item = expArray[i];
+        item.querySelector('[name="exp-title"]').value = "";
+        item.querySelector('[name="exp-company"]').value = "";
+        item.querySelector('[name="start-date"]').value = "";
+        item.querySelector('[name="end-date"]').value = "";
+    }
 };
 
 function checkDuplicate(staff){
+    let valid = true ;
+    console.log(workers);
     for (let i = 0; i < workers.length ; i++) {
-        if (staff.nom === workers[i].nom) {
+        if (staff.email === workers[i].email || staff.phone === workers[i].phone) {
             alert('catch you haha !olreadi igzist!');
+            if (staff.email === workers[i].email) {
+                showError(errorClass[1], "This informations belong to an existing staff!");
+                setTimeout(() => {
+                    clearError(errorClass[1]);
+                }, 10000);
+                console.log('Check Duplicate works! :' + workers[i].email);
+            }
+            else{
+                showError(errorClass[2], "This informations belong to an existing staff!");
+                setTimeout(() => {
+                    clearError(errorClass[2]);
+                }, 10000);
+                console.log('Check Duplicate works! :' + workers[i].phone);
+            }
+            valid = false ;
         }
     }
+    return valid;
+};
+ 
+function saveStaff(staff){
+    let i = workers.length;
+    workers[i].push(staff);
+    console.log('saved?');
+
 }
 const expArray = document.getElementsByClassName('experience-item');
 saveBtn.addEventListener('click', (e)=>{
+    let staff = {
+            id : Date.now(),
+            nom : "",
+            role : "",
+            image : "",
+            email : "", 
+            phone : "",
+            experiences : [],
+        };
     e.preventDefault();
     if(!validateForm()){
         return;
     }
     staff.nom = staffName.value;
-    checkDuplicate(staff);
     staff.role = staffRole.value;
     staff.image = profilImg.src;
     staff.email = staffEmail.value;
     staff.phone = staffPhone.value;
+    if(!checkDuplicate(staff)){
+        return;}
     for (let i = 0; i < expArray.length; i++) {
         const item  = expArray[i];
         const startV =  item.querySelector('[name="start-date"]').value.trim();
@@ -243,10 +324,12 @@ saveBtn.addEventListener('click', (e)=>{
         });
         clearError(errorClass);
     }
-    
+
+    console.log(workers.length);
     workers.push(staff);
+    saveToLocalstorage();
     updateList(workers);
-    console.log(workers);
+    
     modal.classList.add('hidden');
     clearForm();
 });
@@ -265,3 +348,25 @@ cancelBtn.addEventListener('click',()=>{
     modal.classList.add('hidden');
 });
 
+for (let i = 0; i < workers.length; i++) {
+    workers[i].experiences = sortExperiences(workers[i].experiences);
+}
+console.log('sorted');
+
+for (let i = 0; i < workers.length; i++) {
+    console.log(workers[i].experiences);
+}
+console.log('loged');
+
+
+const reception = document.getElementById('reception');
+const conference = document.getElementById('salle-conference');
+const serveurs = document.getElementById('salle-serveurs');
+const securite = document.getElementById('salle-securite');
+const personnel = document.getElementById('salle-personnel');
+const archive = document.getElementById('salle-archive');
+
+
+
+updateList(workers);
+window.closeIT = closeIT;
