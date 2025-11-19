@@ -10,10 +10,10 @@
     <title>WorkSphere</title>
 </head>
 <body
-    class="flex flex-col justify-between bg-black lg:flex-row min-h-screen">
+    class="flex flex-col justify-between bg-linear-to-r from-blue-950 via-blue-900 to-blue-950 lg:flex-row min-h-screen">
     <aside
-        class="order-last justify-end lg:order-first lg:w-[30%] bg-black py-4 lg:pr-3">
-       <div class="bg-white flex flex-col gap-3 rounded-2xl shadow-lg p-6 fade-in">
+        class="order-last justify-end lg:order-first lg:w-[27%] py-4 lg:pr-3">
+       <div class="bg-white flex h-full flex-col gap-3 rounded-br-2xl rounded-se-2xl shadow-lg p-6 fade-in">
             <div class="bg-black/10 focus-within:bg-black/20 focus-within:ring-blue-500 focus-within:ring-2 rounded-xl p-3 flex items-center justify-between mb-4">
                 <input 
                     id="search-staff"
@@ -27,7 +27,7 @@
                     <h2 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-users text-xl text-gray-700"></i> Unassigned Staff</h2>
                     <span 
                         id="number-unassigned"
-                        class="bg-orange-100 aspe text-orange-600 px-3 py-1 rounded-full text-sm font-semibold">1</span>
+                        class="bg-orange-100 aspect-square text-orange-600 px-3 py-1 rounded-full text-sm font-semibold">1</span>
                 </div>
                 <div
                     id="unassigned-list"
@@ -35,12 +35,11 @@
                     <div class=" space-y-3 max-h-[600px] overflow-y-auto">
                         <div class=" bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
                             <div class="flex items-center space-x-3">
-                                <div class="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                                    SA
-                                </div>
+                                <img src="https://avatars.githubusercontent.com/u/209652052?v=4" class="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+            
                                 <div class="flex-1">
-                                    <h3 class="font-semibold text-gray-800">Sarah Ahmed</h3>
-                                    <p class="text-sm text-gray-500">Réceptionniste</p>
+                                    <h3 class="font-semibold text-gray-800">Mohammed Moussa</h3>
+                                    <p class="text-sm text-gray-500">Manager</p>
                                 </div>
                             </div>
                         </div>
@@ -52,12 +51,14 @@
                 <button 
                     id="add-staff"
                     class="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
-                     text-white cursor-pointer font-semibold py-3 px-4 rounded-xl shadow-md transition duration-300 mb-4">
+                     text-white cursor-pointer font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 mb-4">
                     + Add new worker
                 </button>
             </div>
         </div>
     </aside>
+               
+        
     <section    
         id="new-staff"
         class="inset-0 hidden fixed  bg-black/50 flex items-center py-10 justify-center">
@@ -102,7 +103,57 @@
             <div>
                 <div
                     id="experiences">
-                    
+                    <div
+                        class="experience-item flex  flex-col gap-2 p-3 mt-3 rounded-xl border border-gray-300 bg-gray-50">
+                        <div class="flex flex-row-reverse">
+                            <button
+                                onclick="closeIT(this)"
+                                type="button"
+                                class="text-2xl pr-3"
+                            >
+                                <i class="fa-solid fa-xmark rotating"></i>
+                            </button>
+                        </div>
+
+                        <label class="font-semibold">*Job Title :</label>
+                        <input
+                            name="exp-title"
+                            type="text"
+                            placeholder="Ex: Developer Full-stack"
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"
+                        >
+
+                        <label class="font-semibold">*Company :</label>
+                        <input
+                            name="exp-company"
+                            type="text"
+                            placeholder="YouCode"
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"
+                        >
+                        
+                        <label class="font-semibold">*Start date :</label>
+                        <input
+                            name="start-date"
+                            type="text"
+                            placeholder="Ex: 2025"
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 p-2 duration-300"
+                        >
+                        <p class="error-message mb-5 text-sm text-red-500"></p>
+                        <label class="font-semibold">End date :</label>
+                        <input
+                            name="end-date"
+                            type="text"
+                            placeholder="Ex: 2025-present"
+                            class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 p-2 duration-300"
+                        >
+                        <p class="error-message mb-3 text-sm text-red-500"></p>
+                        <label class="font-semibold">Description :</label>
+                        <textarea
+                            name="exp-description"
+                            placeholder="What would you say about your last experience?"
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"
+                        ></textarea>
+                    </div>
                 </div>
 
                 <button
@@ -130,9 +181,9 @@
         </form>
     </section>
     <main
-        class="flex flex-col justify-center items-center order-2 lg:w-[70%]">
+        class="flex flex-col justify-center not-lg:pt-32 items-center order-2 lg:w-[73%]">
         <section
-            class=" grid grid-cols-26 grid-rows-8 bg-desktop  ">
+            class=" grid grid-cols-26 grid-rows-8 bg-desktop border-20 not-lg:border-0 border-amber-100 rounded-2xl  ">
 
 <!-- SALLE-CONFERENCE -->
             <div
@@ -143,12 +194,14 @@
             <div
                 id="reception"
                 class="bg-amber-400/50 flex justify-center row-start-4 
-                    -row-end-1 col-start-1 border-4 col-end-11 items-center">Reception</div>
+                    -row-end-1 col-start-1 border-4 col-end-11 items-center">
+                    
+                    Reception</div>
 <!-- FLOORS -->
             <div
-                class="col-start-11 col-end-15 row-start-1 -row-end-1 bg-black">floor</div>
+                class="col-start-11 col-end-15 row-start-1 -row-end-1 ">floor</div>
             <div
-                class="col-start-15 -col-end-1 bg-black row-start-4 row-end-6">Floor</div>
+                class="col-start-15 -col-end-1  row-start-4 row-end-6">Floor</div>
 <!-- SALLE-SERVEURS -->
             <div
                 id="salle-serveurs"
