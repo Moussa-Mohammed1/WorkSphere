@@ -234,7 +234,7 @@ function clearForm(){
     staffName.value = "";
     staffPhone.value = "";
     staffEmail.value = "";
-    imgUrl.value = "";
+    profilImg.src = "https://i.pinimg.com/1200x/6e/59/95/6e599501252c23bcf02658617b29c894.jpg";
     for (let i = 0; i < expArray.length; i++) {
         const item = expArray[i];
         item.querySelector('[name="exp-title"]').value = "";
@@ -275,24 +275,71 @@ function saveStaff(staff){
     workers[i].push(staff);
     console.log('saved?');
 
+};
+
+function allowedRooms(role, allowed){
+    let rooms = {
+        conference : "conference",
+        reception : "reception",
+        serveurs : "serveurs",
+        securite :"securite",
+        personnel : "personnel",
+        archive : "archive",
+    };
+    if (role === "Réceptionniste") {
+        allowed.push(rooms.reception);
+    }
+    if (role === "Technicien IT") {
+        allowed.push(rooms.serveurs);
+    }
+    if (role === "Agent de sécurite") {
+        allowed.push(rooms.securite);
+    }
+    if (role === "Manager") {
+        allowed.push(rooms.reception);
+        allowed.push(rooms.serveurs);
+        allowed.push(rooms.securite);
+        allowed.push(rooms.archive);
+        allowed.push(rooms.personnel);
+        allowed.push(rooms.conference);
+    }
+    if (role === "Nettoyage") {
+        allowed.push(rooms.reception);
+        allowed.push(rooms.serveurs);
+        allowed.push(rooms.securite);
+        allowed.push(rooms.conference);
+        allowed.push(rooms.personnel);
+    }
+    if (role === "Autres roles") {
+        allowed.push(rooms.conference);
+        allowed.push(rooms.personnel);
+        allowed.push(rooms.archive);
+    }
+    return allowed;
 }
+
 const expArray = document.getElementsByClassName('experience-item');
 saveBtn.addEventListener('click', (e)=>{
     let staff = {
-            id : Date.now(),
-            nom : "",
-            role : "",
-            image : "",
-            email : "", 
-            phone : "",
-            experiences : [],
-        };
+        id : Date.now(),
+        nom : "",
+        role : "",
+        image : "",
+        email : "",
+        possibleRoom : [], 
+        phone : "",
+        experiences : [],
+    };
+    
     e.preventDefault();
     if(!validateForm()){
         return;
     }
     staff.nom = staffName.value;
     staff.role = staffRole.value;
+    allowedRooms(staff.role ,staff.possibleRoom);
+    console.log(staff.possibleRoom);
+    
     staff.image = profilImg.src;
     staff.email = staffEmail.value;
     staff.phone = staffPhone.value;
@@ -366,7 +413,24 @@ const securite = document.getElementById('salle-securite');
 const personnel = document.getElementById('salle-personnel');
 const archive = document.getElementById('salle-archive');
 
+function ableToEnter(room){
+    let listed = "";
+    for (let i = 0; i < workers.length; i++) {
+        const element = array[i];
+        
+    }
+}
 
+document.addEventListener('click',(e)=>{
+    if (reception.querySelector('button').contains(e.target)) {
+        
+    }
+    if (conference.querySelector('button').contains(e.target)) {}
+    if (serveurs.querySelector('button').contains(e.target)) {}
+    if (securite.querySelector('button').contains(e.target)) {}
+    if (personnel.querySelector('button').contains(e.target)) {}
+    if (archive.querySelector('button').contains(e.target)) {}
+})
 
 updateList(workers);
 window.closeIT = closeIT;
