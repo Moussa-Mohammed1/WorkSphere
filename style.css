@@ -43,3 +43,6 @@
 .shown {
     animation: shown 0.3s ease-out;
 }
+button{
+    cursor: pointer;
+}
