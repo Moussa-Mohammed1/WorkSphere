@@ -17,12 +17,13 @@ const staffName = document.getElementById("name");
 const modal = document.getElementById("new-staff");
 const errorClass = document.querySelectorAll('.error-message');
 
+
 let workers = JSON.parse(localStorage.getItem('workers')) || [];
 saveToLocalstorage();
 function saveToLocalstorage(){
  localStorage.setItem('workers',JSON.stringify(workers));
 }
-
+updateRooms();
 updateList(workers);
 showList.addEventListener('click', ()=> {
     updateList(workers);
@@ -182,16 +183,14 @@ function updateList(update){
     console.log('status?');
     list.innerHTML = '';
     for (let i = 0; i < update.length; i++) {
-        if (update[i].currentStatus === "unassigned"){
-            console.log('status?');
+        if (update[i].currentStatus == "unassigned"){
             list.innerHTML += staffList(update[i]);
-            console.log('status?');
         }
     }
     let unassigned = 0;
     if (workers.length) {
         for (let i = 0; i < workers.length; i++) {
-            if (workers[i].currentStatus === "unassigned") {
+            if (workers[i].currentStatus == "unassigned") {
                 unassigned ++;
             }
         }
@@ -221,6 +220,8 @@ function showThisStaff(id){
             <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate}-${xp.endDate})</li>
         `
     }
+    if(!shownExp){shownExp = `<h1 class="text-2xl not-lg:text-xl text-gray-600">This staff have not experience yet!</h1>`}
+    
     const info = document.createElement('div');
     info.className = ' inset-0 fixed bg-black/50 flex flex-row justify-center items-center'
     info.innerHTML = `
@@ -292,12 +293,6 @@ function checkDuplicate(staff){
     return valid;
 };
  
-function saveStaff(staff){
-    let i = workers.length;
-    workers[i].push(staff);
-    console.log('saved?');
-};
-
 function allowedRooms(role, allowed){
     let rooms = {
         conference : "conference",
@@ -421,10 +416,6 @@ for (let i = 0; i < workers.length; i++) {
     workers[i].experiences = sortExperiences(workers[i].experiences);
 }
 console.log('sorted');
-
-for (let i = 0; i < workers.length; i++) {
-    console.log(workers[i].experiences);
-}
 console.log('loged');
 
 
@@ -466,21 +457,27 @@ function ableToEnter(room){
     }
     if (valid) {
         const ableList = document.createElement('div');
-        ableList.className = 'inset-0 fixed able-list bg-black/50 flex items-center justify-center'
+        ableList.className = 'inset-0  fixed able-list bg-black/50 flex items-center justify-center'
         ableList.innerHTML = `
-        <div class=" bg-gray-50 rounded-xl w-fit h-fit p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+        <div class=" bg-gray-50 shown rounded-xl w-fit h-fit p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
             ${listed}
         </div>`;
         document.body.appendChild(ableList);
         console.log('listed');
     }
     else{
-        showNotification('No staff able to enter this zone');
+        if (unassignedCount.textContent == 0) {
+            showNotification('Unfortunately! There is no staff to assign, add workers first');
+        }
+        else{
+            console.log()
+            showNotification('No unassigned staff able to enter this zone');
+        }
     }
 }
 function showNotification(message) {
     const notification = document.createElement('div');
-    notification.className = `fixed px-3 py-3 w-fit hide rounded-lg bg-red-500 font-semibold text-white z-50`;
+    notification.className = `fixed notification px-3 py-3 w-fit hide rounded-lg bg-red-500 font-semibold text-white z-50`;
     notification.innerHTML = message;
     document.body.appendChild(notification);
     setTimeout(() => {
@@ -488,17 +485,103 @@ function showNotification(message) {
     }, 3000);
 }
 
-function assignStaff(id,room){
+function staffinRoom(s){
+    return  `
+        <img src="${s.image}" class="w-12 h-12 not-lg:w-10 not-lg:h-10 rounded-full animate-pulse cursor-pointer border-2 border-green-600" 
+        onclick="showThisAssigned(${s.id})">
+    `
+};
+function updateRooms(){
     for (let i = 0; i < workers.length; i++) {
-        if (workers[i].id === id) {
-            workers[i].currentStatus = "assigned";
-            workers[i].currentRoom = room;
-            
+        if(!workers[i].currentRoom && workers[i].currentStatus == "assigned"){continue;}
+        else{
+            let room = workers[i].currentRoom;
+            let updatedRoom = document.getElementById(`assigned-${room}`);
+            if(!updatedRoom){continue;}
+            else{
+                updatedRoom.innerHTML += staffinRoom(workers[i]);
+            }
         }
     }
+}
+function updateRoom(id,room){
+    const assignedRoom = document.getElementById(`assigned-${room}`);
+    if(!assignedRoom)return;
+    for (let i = 0; i < workers.length; i++) {
+        if (workers[i].id === id && workers[i].currentRoom === room) {
+            assignedRoom.innerHTML += staffinRoom(workers[i]);
+        }
+    }
+}
+
+function assignStaff(id,room){
+    for (let i = 0; i < workers.length; i++) {
+        if (workers[i].id === id){
+            workers[i].currentStatus = "assigned";
+            workers[i].currentRoom = room;
+        }
+    }
+    updateRoom(id,room);
     updateList(workers);
     saveToLocalstorage();
     document.getElementsByClassName('able-list')[0].remove();
+};
+function showThisAssigned(id){
+    let staff = workers.find(staff => staff.id === id);
+    let shownExp = "";
+    for (let i = 0; i < staff.experiences.length; i++) {
+        let xp = staff.experiences[i];
+        shownExp += `
+            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate}-${xp.endDate})</li>
+        `
+    }
+    if(!shownExp){shownExp = `<h1 class="text-lg text-gray-600">This staff have not experience yet!</h1>`}
+    
+    let staffCard = document.createElement('div');
+    staffCard.className = 'inset-0 fixed bg-black/50 flex flex-row justify-center items-center';
+    staffCard.innerHTML =  `
+        <div class="bg-gray-50 shown rounded-xl w-2/5 h-fit  p-4 border-2 border-blue-400 cursor-pointer shadow-md transition duration-300 relative">
+
+            <button 
+                onclick="unassignStaff(${staff.id})"
+                class="absolute top-2 right-2 px-2 py-2 capitalize bg-red-500 text-white text-xs font-semibold rounded hover:bg-red-600">
+                unassign
+            </button>
+
+            <div class="flex items-center space-x-4">
+                <img src="${staff.image}" 
+                    alt="${staff.nom}" 
+                    class="lg:w-24 lg:h-24 w-16 h-16 rounded-full border-2 border-blue-500 object-cover">
+                <div class="flex flex-col">
+                    <h3 class="text-lg font-semibold text-gray-600 capitalize">
+                        full name : <span class="text-black font-semibold">${staff.nom}</span>
+                    </h3>
+                    <p class="text-sm text-gray-600 capitalize">
+                        Current Role : <span class="text-black font-semibold">${staff.role}</span>
+                    </p>
+                    <p class="text-sm text-gray-600 mt-1">
+                        Email: <span class="text-black font-semibold">${staff.email}</span>
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        Phone: <span class="text-black font-semibold">${staff.phone}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <h4 class="font-semibold text-gray-700">Experiences:</h4>
+                <ul class=" text-sm text-gray-600 mt-1">
+                    ${shownExp}
+                </ul>
+            </div>
+        </div>`;
+    document.body.appendChild(staffCard);
+    const card = staffCard.firstElementChild;
+    staffCard.addEventListener('click', (e)=>{
+        if (!card.contains(e.target)) {
+            staffCard.remove();
+        }
+    });
 }
 document.addEventListener('click',(e)=>{
     if (reception.querySelector('button').contains(e.target)) {
