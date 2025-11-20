@@ -22,9 +22,13 @@ saveToLocalstorage();
 function saveToLocalstorage(){
  localStorage.setItem('workers',JSON.stringify(workers));
 }
+
+updateList(workers);
 showList.addEventListener('click', ()=> {
+    updateList(workers);
     list.classList.toggle('hidden');
 });
+
 
 const phoneRegex = /^(05|06|07)[0-9]{8}$/;
 const nameRegex = /^[A-Za-z\s]{2,30}$/;
@@ -159,6 +163,8 @@ staffExp.addEventListener('click',(e)=>{
 });
 
 function staffList(s){
+    console.log('lising loged');
+    
      return `
     <div 
         onclick="showThisStaff(${s.id})"
@@ -173,8 +179,24 @@ function staffList(s){
     </div>`;
 };
 function updateList(update){
-    list.innerHTML = update.map(staffList).join("");
-    unassignedCount.textContent = workers.length;
+    console.log('status?');
+    list.innerHTML = '';
+    for (let i = 0; i < update.length; i++) {
+        if (update[i].currentStatus === "unassigned"){
+            console.log('status?');
+            list.innerHTML += staffList(update[i]);
+            console.log('status?');
+        }
+    }
+    let unassigned = 0;
+    if (workers.length) {
+        for (let i = 0; i < workers.length; i++) {
+            if (workers[i].currentStatus === "unassigned") {
+                unassigned ++;
+            }
+        }
+        unassignedCount.textContent = unassigned;
+    }
 }
 function sortExperiences(exp){
     for (let i = 0; i < exp.length -1; i++) {
@@ -274,7 +296,6 @@ function saveStaff(staff){
     let i = workers.length;
     workers[i].push(staff);
     console.log('saved?');
-
 };
 
 function allowedRooms(role, allowed){
@@ -326,6 +347,8 @@ saveBtn.addEventListener('click', (e)=>{
         role : "",
         image : "",
         email : "",
+        currentStatus : "",
+        currentRoom: "",
         possibleRoom : [], 
         phone : "",
         experiences : [],
@@ -338,8 +361,8 @@ saveBtn.addEventListener('click', (e)=>{
     staff.nom = staffName.value;
     staff.role = staffRole.value;
     allowedRooms(staff.role ,staff.possibleRoom);
+    staff.currentStatus = "unassigned";
     console.log(staff.possibleRoom);
-    
     staff.image = profilImg.src;
     staff.email = staffEmail.value;
     staff.phone = staffPhone.value;
@@ -376,7 +399,6 @@ saveBtn.addEventListener('click', (e)=>{
     workers.push(staff);
     saveToLocalstorage();
     updateList(workers);
-    
     modal.classList.add('hidden');
     clearForm();
 });
@@ -415,21 +437,88 @@ const archive = document.getElementById('salle-archive');
 
 function ableToEnter(room){
     let listed = "";
+    let valid = false;
+    console.log('listing in progress');
+    if(workers.length === 0){return};
     for (let i = 0; i < workers.length; i++) {
-        const element = array[i];
-        
+        const ableStaff = workers[i];
+        if(!ableStaff.possibleRoom)continue;
+        if (ableStaff.possibleRoom.includes(room) && ableStaff.currentStatus === "unassigned"){
+            console.log(ableStaff);
+            valid = true;
+            listed += `
+            <div class="flex items-center space-x-3 space-y-7">
+                <img src="${ableStaff.image}" 
+                    class="w-20 h-20 border-4 border-blue-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
+
+                <div class="flex-1">
+                    <h3 class="font-semibold text-gray-800">${ableStaff.nom}</h3>
+                    <p class="text-sm text-gray-500">${ableStaff.role}</p>
+                </div>
+
+                <button 
+                    onclick="assignStaff(${ableStaff.id},'${room}')"
+                    class="px-4 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-amber-800 hover:scale-90 transition">
+                    Assign
+                </button>
+            </div>`;
+        }
+    }
+    if (valid) {
+        const ableList = document.createElement('div');
+        ableList.className = 'inset-0 fixed able-list bg-black/50 flex items-center justify-center'
+        ableList.innerHTML = `
+        <div class=" bg-gray-50 rounded-xl w-fit h-fit p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+            ${listed}
+        </div>`;
+        document.body.appendChild(ableList);
+        console.log('listed');
+    }
+    else{
+        showNotification('No staff able to enter this zone');
     }
 }
+function showNotification(message) {
+    const notification = document.createElement('div');
+    notification.className = `fixed px-3 py-3 w-fit hide rounded-lg bg-red-500 font-semibold text-white z-50`;
+    notification.innerHTML = message;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
 
+function assignStaff(id,room){
+    for (let i = 0; i < workers.length; i++) {
+        if (workers[i].id === id) {
+            workers[i].currentStatus = "assigned";
+            workers[i].currentRoom = room;
+            
+        }
+    }
+    updateList(workers);
+    saveToLocalstorage();
+    document.getElementsByClassName('able-list')[0].remove();
+}
 document.addEventListener('click',(e)=>{
     if (reception.querySelector('button').contains(e.target)) {
-        
+        ableToEnter("reception");
     }
-    if (conference.querySelector('button').contains(e.target)) {}
-    if (serveurs.querySelector('button').contains(e.target)) {}
-    if (securite.querySelector('button').contains(e.target)) {}
-    if (personnel.querySelector('button').contains(e.target)) {}
-    if (archive.querySelector('button').contains(e.target)) {}
+    if (conference.querySelector('button').contains(e.target)) {
+        ableToEnter("conference");
+    }
+    if (serveurs.querySelector('button').contains(e.target)) {
+        ableToEnter("serveurs");
+    }
+    if (securite.querySelector('button').contains(e.target)) {
+        ableToEnter("securite");
+    }
+    if (personnel.querySelector('button').contains(e.target)) {
+        ableToEnter("personnel");
+    }
+    if (archive.querySelector('button').contains(e.target)) {
+        ableToEnter("archive");
+    }
 })
 
 updateList(workers);
