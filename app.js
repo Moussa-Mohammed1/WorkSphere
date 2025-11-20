@@ -1,5 +1,3 @@
-
-
 const list =  document.getElementById('unassigned-list');
 const showList = document.getElementById('unassigned-toggle');
 const addStaff = document.getElementById('add-staff');
@@ -16,7 +14,6 @@ const staffEmail = document.getElementById("email");
 const staffName = document.getElementById("name");
 const modal = document.getElementById("new-staff");
 const errorClass = document.querySelectorAll('.error-message');
-
 
 let staffInRoomCounter = {
     cntconference : 0,
@@ -38,7 +35,6 @@ showList.addEventListener('click', ()=> {
     updateList(workers);
     list.classList.toggle('hidden');
 });
-
 
 const phoneRegex = /^(05|06|07)[0-9]{8}$/;
 const nameRegex = /^[A-Za-z\s]{2,30}$/;
@@ -136,16 +132,16 @@ function newExp() {
         <label class="font-semibold">*Start date :</label>
         <input
             name="start-date"
-            type="text"
-            placeholder="Ex: 2025"
+            type="date"
+            
             class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 p-2 duration-300"
         >
         <p class="error-message mb-5 text-sm text-red-500"></p>
         <label class="font-semibold">End date :</label>
         <input
             name="end-date"
-            type="text"
-            placeholder="Ex: 2025-present"
+            type="date"
+            
             class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 p-2 duration-300"
         >
         <p class="error-message mb-3 text-sm text-red-500"></p>
@@ -375,11 +371,8 @@ saveBtn.addEventListener('click', (e)=>{
         const item  = expArray[i];
         const startV =  item.querySelector('[name="start-date"]').value;
         console.log(startV);
-        
         const endV = item.querySelector('[name="end-date"]').value.trim();
-
         if (endV < startV ) {
-            
                 const closest2 = item.querySelector('[name="start-date"]').nextElementSibling;
                 showError(closest2, "invalid value, must be a logic start date ");
            
@@ -396,7 +389,6 @@ saveBtn.addEventListener('click', (e)=>{
         });
         clearError(errorClass);
     }
-
     console.log(workers.length);
     workers.push(staff);
     saveToLocalstorage();
@@ -432,7 +424,6 @@ const serveurs = document.getElementById('salle-serveurs');
 const securite = document.getElementById('salle-securite');
 const personnel = document.getElementById('salle-personnel');
 const archive = document.getElementById('salle-archive');
-
 
 
 function ableToEnter(room){
@@ -530,15 +521,78 @@ function updateRoom(id, room) {
     }
     roomLimitation();
 }
-
 function assignStaff(id,room){
-    for (let i = 0; i < workers.length; i++) {
-        if (workers[i].id === id){
-            workers[i].currentStatus = "assigned";
-            workers[i].currentRoom = room;
-            roomLimitation();
-        }
+    switch (room) {
+        case "personnel":
+            if (staffInRoomCounter.cntpersonnel < 6) {
+                for (let i = 0; i < workers.length; i++) {
+                    if (workers[i].id === id){
+                        workers[i].currentStatus = "assigned";
+                        workers[i].currentRoom = room;
+                        roomLimitation();
+                    }
+                }
+            }else{showNotification("this room have reached its max size!");}
+            break;
+        case "archive":
+            if (staffInRoomCounter.cntarchive < 3) {
+                for (let i = 0; i < workers.length; i++) {
+                    if (workers[i].id === id){
+                        workers[i].currentStatus = "assigned";
+                        workers[i].currentRoom = room;
+                        roomLimitation();
+                    }
+                }
+            }else{showNotification("this room have reached its max size!");}
+            break;
+        case "serveurs": 
+            if (staffInRoomCounter.cntserveures < 6) {
+                for (let i = 0; i < workers.length; i++) {
+                    if (workers[i].id === id){
+                        workers[i].currentStatus = "assigned";
+                        workers[i].currentRoom = room;
+                        roomLimitation();
+                    }
+                }
+            }else{showNotification("this room have reached its max size!");}
+            break;
+        case "securite" :
+            if (staffInRoomCounter.cntsecurite < 6) {
+                for (let i = 0; i < workers.length; i++) {
+                    if (workers[i].id === id){
+                        workers[i].currentStatus = "assigned";
+                        workers[i].currentRoom = room;
+                        roomLimitation();
+                    }
+                }
+            }else{showNotification("this room have reached its max size!");}
+            break;
+        case "conference":
+            if (staffInRoomCounter.cntconference < 8) {
+                for (let i = 0; i < workers.length; i++) {
+                    if (workers[i].id === id){
+                        workers[i].currentStatus = "assigned";
+                        workers[i].currentRoom = room;
+                        roomLimitation();
+                    }
+                }
+            }else{showNotification("this room have reached its maximum size!");}
+            break;
+        case "reception":
+            if (staffInRoomCounter.cntreception < 12) {
+                for (let i = 0; i < workers.length; i++) {
+                    if (workers[i].id === id){
+                        workers[i].currentStatus = "assigned";
+                        workers[i].currentRoom = room;
+                        roomLimitation();
+                    }
+                }
+            }else{showNotification("this room have reached its max size!");}
+            break;
+        default:
+            break;
     }
+    
     updateRoom(id,room);
     updateList(workers);
     saveToLocalstorage();
@@ -550,7 +604,7 @@ function showThisAssigned(id){
     for (let i = 0; i < staff.experiences.length; i++) {
         let xp = staff.experiences[i];
         shownExp += `
-            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate}-${xp.endDate})</li>
+            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate}/${xp.endDate})</li>
         `
     }
     if(!shownExp){shownExp = `<h1 class="text-lg text-gray-600">This staff have not experience yet!</h1>`}
@@ -675,6 +729,14 @@ document.addEventListener('click',(e)=>{
         ableToEnter("archive");
     }
 })
-
+search.addEventListener('input',()=>{
+    for (let i = 0; i < workers.length; i++) {
+        list.innerHTML = "";
+        const staff = workers[i];
+        if (staff.nom === search.value) {
+            list.innerHTML = staffList(staff);
+        }
+    }
+})
 updateList(workers);
 window.closeIT = closeIT;
