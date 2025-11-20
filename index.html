@@ -28,7 +28,7 @@
                     <h2 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-users text-xl text-gray-700"></i> Unassigned Staff</h2>
                     <span 
                         id="number-unassigned"
-                        class="bg-orange-100 aspect-square text-orange-600 w-8 h-8 flex justify-center items-center rounded-full text-sm font-semibold">1</span>
+                        class="bg-orange-100 aspect-square text-orange-600 w-8 h-8 flex justify-center items-center rounded-full text-sm font-semibold">0</span>
                 </div>
                 <div
                     id="unassigned-list"
@@ -51,7 +51,7 @@
         
     <section    
         id="new-staff"
-        class="inset-0 hidden fixed  bg-black/50 flex items-center py-10 justify-center">
+        class="inset-0 hidden fixed z-50  bg-black/50 flex items-center py-10 justify-center">
         <form
             class="bg-white fade-in h-5/5 overflow-y-scroll [scrollbar-width:none]  px-4 py-3 rounded-2xl w-3/5 lg:w-[35%]">
             <label for="name" class="font-semibold">*Name : </label>
@@ -186,19 +186,30 @@
                         class="w-10 h-10 bg-orange-600 mr-2 rounded-full text-black fade-in mt-2">
                         <i class="fa-solid fa-plus"></i>
                     </button>
+                    <div
+                        id="assigned-conference"
+                        class="flex flex-row flex-wrap gap-1">
+
+                    </div>
                 </div>
 <!-- RECEPTION -->
             <div
                 id="reception"
                 class="bg-amber-400/50 flex justify-between row-start-4 
                     -row-end-1 col-start-1 border-4 col-end-11 flex-wrap">
-                    <h1
-                    class="not-lg:text-sm font-semibold capitalize">salle de reception</h1>
-                    <button
-                        class="w-10 h-10 bg-orange-600 mr-2 rounded-full text-black fade-in mt-2">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
+                    <div
+                        class="">
+                        <h1
+                        class="not-lg:text-sm font-semibold capitalize">salle de reception</h1>
+                        <button
+                            class="w-10 h-10 bg-orange-600 mr-2 justify-end rounded-full text-black fade-in mt-2">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
                     </div>
+                    <div
+                        id="assigned-reception"
+                        class="flex flex-row flex-wrap gap-1"></div>
+            </div>
 <!-- FLOORS -->
             <div
                 class="col-start-11 col-end-15 row-start-1 -row-end-1 ">floor</div>
@@ -215,6 +226,9 @@
                     class="w-10 h-10 bg-orange-600 mr-2 rounded-full text-black fade-in mt-2">
                     <i class="fa-solid fa-plus"></i>
                 </button>
+                <div
+                    id="assigned-serveurs"
+                        class="flex flex-row flex-wrap gap-1"></div>
             </div>
 <!-- SALLE-SECURITE-->
             <div
@@ -227,6 +241,9 @@
                     class="w-10 h-10 bg-orange-600 mr-2 rounded-full text-black fade-in mt-2">
                     <i class="fa-solid fa-plus"></i>
                 </button>
+                <div
+                    id="assigned-securite"
+                    class="flex flex-row flex-wrap gap-1"></div>
             </div>
 <!-- SALLE-PERSONNEL-->
             <div
@@ -240,8 +257,8 @@
                     <i class="fa-solid fa-plus"></i>
                 </button>
                 <div
-                    id="personnal-workers"
-                    ></div>
+                    id="assigned-personnal"
+                    class="flex flex-row flex-wrap gap-1"></div>
                 </div>
 <!-- SALLE-ARCHIVE-->
             <div
@@ -254,6 +271,9 @@
                     class="w-10 h-10 bg-orange-600 mr-2 not-lg:text-sm rounded-full text-black fade-in mt-2">
                     <i class="fa-solid fa-plus"></i>
                 </button>
+                <div
+                    id="assigned-archive"
+                    class="flex flex-row flex-wrap gap-1"></div>
                 </div>
         </section>
     </main>
