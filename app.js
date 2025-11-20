@@ -18,6 +18,15 @@ const modal = document.getElementById("new-staff");
 const errorClass = document.querySelectorAll('.error-message');
 
 
+let staffInRoomCounter = {
+    cntconference : 0,
+    cntpersonnel :0,
+    cntreception : 0,
+    cntarchive : 0,
+    cntsecurite  : 0,
+    cntserveures : 0
+};
+
 let workers = JSON.parse(localStorage.getItem('workers')) || [];
 saveToLocalstorage();
 function saveToLocalstorage(){
@@ -155,7 +164,6 @@ function closeIT(button){
     const parent = button.closest('.experience-item');
     parent.remove();
     console.log("close works!");
-    
 }
 
 staffExp.addEventListener('click',(e)=>{
@@ -365,20 +373,19 @@ saveBtn.addEventListener('click', (e)=>{
         return;}
     for (let i = 0; i < expArray.length; i++) {
         const item  = expArray[i];
-        const startV =  item.querySelector('[name="start-date"]').value.trim();
+        const startV =  item.querySelector('[name="start-date"]').value;
+        console.log(startV);
+        
         const endV = item.querySelector('[name="end-date"]').value.trim();
 
-        if (!startDateRegex.test(startV) || !endDateRegex.test(endV) ) {
-            if (!startDateRegex.test(startV)) {
-                const closestError = item.querySelector('[name="start-date"]').nextElementSibling;
-                showError(closestError, "invalid value, must be a logic year(1990-2025)");
+        if (endV < startV ) {
+            
+                const closest2 = item.querySelector('[name="start-date"]').nextElementSibling;
+                showError(closest2, "invalid value, must be a logic start date ");
+           
+                const closest1 = item.querySelector('[name="end-date"]').nextElementSibling;
+                showError(closest1, "invalid value, must be a logic year(1990-2025)");
                 return;
-            }
-            if(!endDateRegex.test(endV)){
-                const closestError = item.querySelector('[name="end-date"]').nextElementSibling;
-                showError(closestError, "invalid value, must be a logic year(1990-2025)");
-                return;
-            }
         }
         staff.experiences.unshift({
             title: item.querySelector('[name="exp-title"]').value.trim(),
@@ -425,6 +432,8 @@ const serveurs = document.getElementById('salle-serveurs');
 const securite = document.getElementById('salle-securite');
 const personnel = document.getElementById('salle-personnel');
 const archive = document.getElementById('salle-archive');
+
+
 
 function ableToEnter(room){
     let listed = "";
@@ -487,31 +496,39 @@ function showNotification(message) {
 
 function staffinRoom(s){
     return  `
-        <img src="${s.image}" class="w-12 h-12 not-lg:w-10 not-lg:h-10 rounded-full animate-pulse cursor-pointer border-2 border-green-600" 
+        <img src="${s.image}" id="staff-${s.id}" class="w-12 h-12 not-lg:w-10 not-lg:h-10 rounded-full animate-pulse cursor-pointer border-2 border-green-600" 
         onclick="showThisAssigned(${s.id})">
     `
 };
-function updateRooms(){
+function updateRooms() {
+    ['conference', 'reception', 'serveurs', 'securite', 'personnel', 'archive'].forEach(room => {
+        const roomElement = document.getElementById(`assigned-${room}`);
+        if (roomElement) roomElement.innerHTML = '';
+    });
+    
     for (let i = 0; i < workers.length; i++) {
-        if(!workers[i].currentRoom && workers[i].currentStatus == "assigned"){continue;}
-        else{
-            let room = workers[i].currentRoom;
-            let updatedRoom = document.getElementById(`assigned-${room}`);
-            if(!updatedRoom){continue;}
-            else{
-                updatedRoom.innerHTML += staffinRoom(workers[i]);
+        if (workers[i].currentStatus === "assigned" && workers[i].currentRoom) {
+            const room = workers[i].currentRoom;
+            const roomElement = document.getElementById(`assigned-${room}`);
+            if (roomElement) {
+                roomElement.innerHTML += staffinRoom(workers[i]);
             }
         }
     }
 }
-function updateRoom(id,room){
+function updateRoom(id, room) {
     const assignedRoom = document.getElementById(`assigned-${room}`);
-    if(!assignedRoom)return;
-    for (let i = 0; i < workers.length; i++) {
-        if (workers[i].id === id && workers[i].currentRoom === room) {
-            assignedRoom.innerHTML += staffinRoom(workers[i]);
+    const worker = workers.find(w => w.id === id);
+    const existing = document.getElementById(`staff-${id}`);
+    
+    if (worker && worker.currentRoom === room && worker.currentStatus === "assigned") {
+        if (!existing) {
+            assignedRoom.innerHTML += staffinRoom(worker);
         }
+    } else if (existing) {
+        existing.remove();
     }
+    roomLimitation();
 }
 
 function assignStaff(id,room){
@@ -519,6 +536,7 @@ function assignStaff(id,room){
         if (workers[i].id === id){
             workers[i].currentStatus = "assigned";
             workers[i].currentRoom = room;
+            roomLimitation();
         }
     }
     updateRoom(id,room);
@@ -538,14 +556,13 @@ function showThisAssigned(id){
     if(!shownExp){shownExp = `<h1 class="text-lg text-gray-600">This staff have not experience yet!</h1>`}
     
     let staffCard = document.createElement('div');
-    staffCard.className = 'inset-0 fixed bg-black/50 flex flex-row justify-center items-center';
+    staffCard.className = 'inset-0 unassign-card fixed bg-black/50 flex flex-row justify-center items-center';
     staffCard.innerHTML =  `
-        <div class="bg-gray-50 shown rounded-xl w-2/5 h-fit  p-4 border-2 border-blue-400 cursor-pointer shadow-md transition duration-300 relative">
-
+        <div class="bg-gray-50 shown rounded-xl w-2/5 not-lg:w-4/6  h-fit  p-4 border-2 border-blue-400 cursor-pointer shadow-md transition duration-300 relative">
             <button 
-                onclick="unassignStaff(${staff.id})"
-                class="absolute top-2 right-2 px-2 py-2 capitalize bg-red-500 text-white text-xs font-semibold rounded hover:bg-red-600">
-                unassign
+                onclick="unassignStaff(${staff.id},'${staff.currentRoom}'),closest('.unassign-card').remove();" alt="unassign"
+                class="absolute top-2 right-2 aspect-square px-3 capitalize bg-red-500 text-white font-semibold rounded hover:bg-red-600">
+                <i class="fa-solid fa-xmark"></i>
             </button>
 
             <div class="flex items-center space-x-4">
@@ -558,6 +575,9 @@ function showThisAssigned(id){
                     </h3>
                     <p class="text-sm text-gray-600 capitalize">
                         Current Role : <span class="text-black font-semibold">${staff.role}</span>
+                    </p>
+                    <p class="text-sm text-gray-600 capitalize">
+                        Current Localisation: <span class="text-black font-semibold">${staff.currentRoom}</span>
                     </p>
                     <p class="text-sm text-gray-600 mt-1">
                         Email: <span class="text-black font-semibold">${staff.email}</span>
@@ -582,6 +602,58 @@ function showThisAssigned(id){
             staffCard.remove();
         }
     });
+}
+function unassignStaff(id,room){
+    let Uroom = room;
+    for (let i = 0; i < workers.length; i++) {
+        if (workers[i].id === id) {
+            console.log(workers[i].currentRoom);
+            workers[i].currentRoom = "";
+            workers[i].currentStatus = "unassigned";
+            updateRoom(id,Uroom);
+        }
+    }
+    updateList(workers);
+    updateRooms();
+    roomLimitation();
+    saveToLocalstorage();
+}
+roomLimitation();
+function roomLimitation(){
+    let cntpersonnel = 0;
+    let cntconference = 0;
+    let cntreception = 0;
+    let cntserveures = 0;
+    let cntsecurite = 0;
+    let cntarchive = 0;
+    for (let i = 0; i < workers.length; i++) {
+        const w = workers[i];
+        if(w.currentRoom === "personnel"){cntpersonnel++;
+            console.log(cntpersonnel);
+        }
+        if(w.currentRoom === "conference"){cntconference++;}
+        if(w.currentRoom === "reception"){cntreception++;}
+        if(w.currentRoom === "serveurs"){cntserveures++;}
+        if(w.currentRoom === "securite"){cntsecurite++;}
+        if(w.currentRoom === "archive"){cntarchive++;}
+    }
+    if(cntpersonnel === 0){ console.log(cntpersonnel);}
+    if(cntconference === 0){ console.log(cntpersonnel);}
+    if(cntreception === 0){reception.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    else{reception.classList.remove('bg-red-500', 'animate-pulse');}
+    if(cntserveures === 0){serveurs.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    else{serveurs.classList.remove('bg-red-500', 'animate-pulse')}
+    if(cntsecurite === 0){securite.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    else{securite.classList.remove('bg-red-500', 'animate-pulse')}
+    if(cntarchive === 0){archive.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    else{archive.classList.remove('bg-red-500', 'animate-pulse')}
+    staffInRoomCounter.cntarchive = cntarchive;
+    staffInRoomCounter.cntpersonnel = cntpersonnel;
+    staffInRoomCounter.cntconference = cntconference;
+    staffInRoomCounter.cntreception = cntreception;
+    staffInRoomCounter.cntsecurite = cntsecurite;
+    staffInRoomCounter.cntserveures = cntserveures;
+    console.log(staffInRoomCounter);
 }
 document.addEventListener('click',(e)=>{
     if (reception.querySelector('button').contains(e.target)) {
