@@ -452,7 +452,8 @@ function ableToEnter(room){
 
             valid = true;
             listed += `
-            <div class="flex items-center justify-center  space-x-5 space-y-5">
+            <div class="flex flex-row flex-wrap items-center justify-center  space-x-5 space-y-5">
+            
                 <img src="${ableStaff.image}" 
                     class="w-20 h-20 border-4 border-blue-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
 
@@ -466,6 +467,7 @@ function ableToEnter(room){
                     class="px-3 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-amber-800 hover:scale-90 transition">
                     Assign
                 </button>
+            
             </div>`;
         }
     }
@@ -473,7 +475,7 @@ function ableToEnter(room){
         const ableList = document.createElement('div');
         ableList.className = 'inset-0  fixed able-list bg-black/50 flex items-center justify-center'
         ableList.innerHTML = `
-        <div class=" bg-gray-50 py-4 px-3 shown rounded-xl w-fit h-fit border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+        <div class=" bg-gray-50 flex flex-col flex-wrap py-4 px-3 shown rounded-xl h-4/5 space-x-1.5 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
             ${listed}
         </div>`;
         document.body.appendChild(ableList);
@@ -736,6 +738,8 @@ document.addEventListener('click',(e)=>{
         ableToEnter("archive");
     }
 })
+console.log(workers);
+
 sort.addEventListener('change',()=>{
     saveToLocalstorage();
     updateRooms();

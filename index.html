@@ -1,79 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./style.css">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <title>WorkSphere</title>
 </head>
+
 <body
     class="flex flex-col justify-between bg-linear-to-r from-blue-950 via-blue-900 to-blue-950 lg:flex-row min-h-screen">
-    <aside
-        class="order-last justify-end lg:order-first lg:w-[27%] py-4 lg:pr-3">
-       <div class="bg-white flex h-full flex-col gap-3 rounded-br-2xl rounded-se-2xl shadow-lg p-6 fade-in">
-                <h1 class="font-bold">Sort by :</h1>
-                <select id="sort-staff" class="bg-black/10 w-5/5  focus-within:ring-blue-500 focus-within:ring-2 hover:bg-black/20 rounded-xl p-3 transition cursor-pointer flex items-center justify-between mb-4 outline-none">
-                    <option value="default" class="font-bold">Select a role</option>
-                    <option>Technicien IT</option>
-                    <option>Réceptionniste</option>
-                    <option>Agent de sécurite</option>
-                    <option>Manager</option>
-                    <option>Nettoyage</option>
-                    <option>Autres roles</option>
-                </select>
-            <div
-                class="">
-                <div 
-                    id="unassigned-toggle"
-                    class="hover:bg-black/20 cursor-pointer rounded-xl p-3 flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-users text-xl text-gray-700"></i> Unassigned Staff</h2>
-                    <span 
-                        id="number-unassigned"
-                        class="bg-orange-100 aspect-square text-orange-600 w-8 h-8 flex justify-center items-center rounded-full text-sm font-semibold">0</span>
-                </div>
-                <div
-                    id="unassigned-list"
-                    class="hidden flex h-56  overflow-y-scroll [scrollbar-width:none] justify-center  fade-in flex-col gap-3">
-                    
-                </div>
-
-            </div>
-            <div>
-                <button 
-                    id="add-staff"
-                    class="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
-                     text-white cursor-pointer font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 mb-4">
-                    + Add new worker
-                </button>
-            </div>
-        </div>
-    </aside>
-               
-        
-    <section    
-        id="new-staff"
-        class="inset-0 hidden fixed z-50  bg-black/50 flex items-center py-10 justify-center">
-        <form
-            class="bg-white fade-in h-5/5 overflow-y-scroll [scrollbar-width:none]  px-4 py-3 rounded-2xl w-3/5 lg:w-[35%]">
-            <label for="name" class="font-semibold">*Name : </label>
-            <input id="name" type="text" placeholder="Name" 
-                class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
-            <p class="error-message mb-5 text-sm text-red-500"></p>
-            <label for="email" class="font-semibold ">*Email :</label>
-            <input id="email" type="text" placeholder="Email" 
-                class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
-            <!-- error message -->
-            <p class="error-message mb-5 text-sm text-red-500"></p>
-            <label for="phone" class="font-semibold">*Phone :</label>
-            <input type="text" id="phone" placeholder="Phone"
-                class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
-            <p class="error-message mb-5 text-sm text-red-500"></p>
-            <label for="role"    class="font-semibold">*Role : </label>
-            <select id="role"   
-                    class="hover:bg-blue-50 outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500 ">
+    <aside class="order-last justify-end lg:order-first lg:w-[27%] py-4 lg:pr-3">
+        <div class="bg-white flex h-full flex-col gap-3 rounded-br-2xl rounded-se-2xl shadow-lg p-6 fade-in">
+            <h1 class="font-bold">Sort by :</h1>
+            <select id="sort-staff"
+                class="bg-black/10 w-5/5  focus-within:ring-blue-500 focus-within:ring-2 hover:bg-black/20 rounded-xl p-3 transition cursor-pointer flex items-center justify-between mb-4 outline-none">
+                <option value="default" class="font-bold">Select a role</option>
                 <option>Technicien IT</option>
                 <option>Réceptionniste</option>
                 <option>Agent de sécurite</option>
@@ -81,113 +26,128 @@
                 <option>Nettoyage</option>
                 <option>Autres roles</option>
             </select>
-            <div
-                class="flex flex-col gap-3 justify-center items-center mt-3.5">
-
-                <img 
-                    class="rounded-full lg:w-40 w-35 border-2 border-green-500 "
-                    id="staff-image"
-                    src="https://i.pinimg.com/1200x/6e/59/95/6e599501252c23bcf02658617b29c894.jpg" alt="profile-page">
-                    <label for="image-url"></label>
-                    <input 
-                        id="image-url"
-                        type="text" placeholder="http://image.example.com"
-                        class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 duration-500 w-5/5 p-2">
+            <div class="">
+                <div id="unassigned-toggle"
+                    class="hover:bg-black/20 cursor-pointer rounded-xl p-3 flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-bold text-gray-800"><i class="fa-solid fa-users text-xl text-gray-700"></i>
+                        Unassigned Staff</h2>
+                    <span id="number-unassigned"
+                        class="bg-orange-100 aspect-square text-orange-600 w-8 h-8 flex justify-center items-center rounded-full text-sm font-semibold">0</span>
+                </div>
+                <div
+                    id="unassigned-list"
+                    class="hidden flex h-58  overflow-y-scroll [scrollbar-width:none]  fade-in flex-col gap-3">
+                    
+                </div>
+                <!-- <div id="unassigned-list" class="hidden h-58 overflow-y-auto flex fade-in flex-col gap-3">
+                </div> -->
             </div>
             <div>
-                <div
-                    id="experiences">
+                <button id="add-staff"
+                    class="w-full bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+                     text-white cursor-pointer font-semibold py-3 px-4 rounded-lg shadow-md transition duration-300 mb-4">
+                    + Add new worker
+                </button>
+            </div>
+        </div>
+    </aside>
+
+
+    <section id="new-staff" class="inset-0 hidden fixed z-50  bg-black/50 flex items-center py-10 justify-center">
+        <form
+            class="bg-white fade-in h-5/5 overflow-y-scroll [scrollbar-width:none]  px-4 py-3 rounded-2xl w-3/5 lg:w-[35%]">
+            <label for="name" class="font-semibold">*Name : </label>
+            <input id="name" type="text" placeholder="Name"
+                class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+            <p class="error-message mb-5 text-sm text-red-500"></p>
+            <label for="email" class="font-semibold ">*Email :</label>
+            <input id="email" type="text" placeholder="Email"
+                class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+            <!-- error message -->
+            <p class="error-message mb-5 text-sm text-red-500"></p>
+            <label for="phone" class="font-semibold">*Phone :</label>
+            <input type="text" id="phone" placeholder="Phone"
+                class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500" required>
+            <p class="error-message mb-5 text-sm text-red-500"></p>
+            <label for="role" class="font-semibold">*Role : </label>
+            <select id="role"
+                class="hover:bg-blue-50 outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 w-5/5 p-2 duration-500 ">
+                <option>Technicien IT</option>
+                <option>Réceptionniste</option>
+                <option>Agent de sécurite</option>
+                <option>Manager</option>
+                <option>Nettoyage</option>
+                <option>Autres roles</option>
+            </select>
+            <div class="flex flex-col gap-3 justify-center items-center mt-3.5">
+
+                <img class="rounded-full lg:w-40 w-35 border-2 border-green-500 " id="staff-image"
+                    src="https://i.pinimg.com/1200x/6e/59/95/6e599501252c23bcf02658617b29c894.jpg" alt="profile-page">
+                <label for="image-url"></label>
+                <input id="image-url" type="text" placeholder="http://image.example.com"
+                    class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 duration-500 w-5/5 p-2">
+            </div>
+            <div>
+                <div id="experiences">
                     <div
                         class="experience-item flex  flex-col gap-2 p-3 mt-3 rounded-xl border border-gray-300 bg-gray-50">
                         <div class="flex flex-row-reverse">
-                            <button
-                                onclick="closeIT(this)"
-                                type="button"
-                                class="text-2xl pr-3"
-                            >
+                            <button onclick="closeIT(this)" type="button" class="text-2xl pr-3">
                                 <i class="fa-solid fa-xmark rotating"></i>
                             </button>
                         </div>
 
                         <label class="font-semibold">*Job Title :</label>
-                        <input
-                            name="exp-title"
-                            type="text"
-                            placeholder="Ex: Developer Full-stack"
-                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"
-                        >
+                        <input name="exp-title" type="text" placeholder="Ex: Developer Full-stack"
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300">
 
                         <label class="font-semibold">*Company :</label>
-                        <input
-                            name="exp-company"
-                            type="text"
-                            placeholder="YouCode"
-                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"
-                        >
-                        
+                        <input name="exp-company" type="text" placeholder="YouCode"
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300">
+
                         <label class="font-semibold">*Start date :</label>
-                        <input
-                            name="start-date"
-                            type="date"
-                            required
-                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 p-2 duration-300"
-                        >
+                        <input name="start-date" type="date" required
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 p-2 duration-300">
                         <p class="error-message mb-5 text-sm text-red-500"></p>
                         <label class="font-semibold">End date :</label>
-                        <input
-                            name="end-date"
-                            type="date"
-                            required
-                            class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 p-2 duration-300"
-                        >
+                        <input name="end-date" type="date" required
+                            class="outline-none ring rounded-lg  focus:ring-blue-600 focus:ring-1 p-2 duration-300">
                         <p class="error-message mb-3 text-sm text-red-500"></p>
                         <label class="font-semibold">Description :</label>
-                        <textarea
-                            name="exp-description"
-                            placeholder="What would you say about your last experience?"
-                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"
-                        ></textarea>
+                        <textarea name="exp-description" placeholder="What would you say about your last experience?"
+                            class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"></textarea>
                         <p class="empty-exp text-sm text-red-500"></p>
                     </div>
                 </div>
 
-                <button
-                    
-                    id="staff-experience"
-                    class="w-fit cursor-pointer mt-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
-                     text-white font-semibold px-1 py-2  rounded-lg shadow-md transition duration-300 "
-                    >+ Add Experience</button>
+                <button id="staff-experience" class="w-fit cursor-pointer mt-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+                     text-white font-semibold px-1 py-2  rounded-lg shadow-md transition duration-300 ">+ Add
+                    Experience</button>
             </div>
-            <div
-                class="flex gap-4 flex-row-reverse">
-                <button
-                    id="save"
-                    class="w-fit cursor-pointer mt-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
+            <div class="flex gap-4 flex-row-reverse">
+                <button id="save" class="w-fit cursor-pointer mt-3 bg-linear-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700
                      text-white font-semibold px-5   rounded-lg shadow-md transition duration-300">
                     Save
                 </button>
-                <button
-                    id="cancel"
-                    class="w-fit cursor-pointer mt-3 bg-gray-200 focus:bg-gray-300
+                <button id="cancel" class="w-fit cursor-pointer mt-3 bg-gray-200 focus:bg-gray-300
                      text-black font-semibold px-2 py-1  rounded-lg shadow-md transition duration-300">
                     Cancel
                 </button>
             </div>
         </form>
     </section>
-    <main
-        class="flex flex-col justify-center not-lg:aspect-video items-center order-2 lg:w-[73%]">
+    <main class="flex flex-col justify-center not-lg:aspect-video items-center order-2 lg:w-[73%]">
         <section
             class="grid grid-cols-26 grid-rows-8 bg-desktop border-20 not-lg:border-0 border-amber-100 rounded-2xl">
 
             <!-- SALLE-CONFERENCE -->
-            <div
-                id="salle-conference"
+            <div id="salle-conference"
                 class=" row-start-1 row-end-4 col-start-1 col-end-11 border-4 not-lg:border-2 flex flex-col p-3 gap-3">
 
                 <div class="flex items-center justify-between w-full">
                     <h1 class="text-xs lg:text-sm font-semibold capitalize">Salle des conferences</h1>
-                    <button class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7  bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
+                    <button
+                        class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7  bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -197,13 +157,13 @@
 
 
             <!-- RECEPTION -->
-            <div
-                id="reception"
+            <div id="reception"
                 class=" flex flex-col p-3 gap-3 row-start-4 not-lg:border-2 -row-end-1 col-start-1 col-end-11 border-4">
 
                 <div class="flex items-center justify-between w-full">
                     <h1 class="text-xs lg:text-sm font-semibold capitalize">Salle de reception</h1>
-                    <button class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
+                    <button
+                        class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -218,13 +178,13 @@
 
 
             <!-- SALLE-SERVEURS -->
-            <div
-                id="salle-serveurs"
+            <div id="salle-serveurs"
                 class=" flex flex-col p-3 gap-3 not-lg:border-2 row-start-1 row-end-4 col-start-21 -col-end-1 border-4">
 
                 <div class="flex items-center justify-between w-full">
                     <h1 class="text-xs lg:text-sm font-semibold capitalize">Salle des serveurs</h1>
-                    <button class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
+                    <button
+                        class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -234,13 +194,13 @@
 
 
             <!-- SALLE-SECURITE -->
-            <div
-                id="salle-securite"
+            <div id="salle-securite"
                 class=" flex flex-col p-3 not-lg:border-2 gap-3 row-start-1 row-end-4 col-start-15 col-end-21 border-4">
 
                 <div class="flex items-center justify-between w-full">
                     <h1 class="text-xs lg:text-sm font-semibold capitalize">Salle de securite</h1>
-                    <button class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
+                    <button
+                        class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -250,13 +210,13 @@
 
 
             <!-- SALLE-PERSONNEL -->
-            <div
-                id="salle-personnel"
+            <div id="salle-personnel"
                 class="flex flex-col p-3 gap-3 not-lg:border-2  row-start-6 -row-end-1 col-start-21 -col-end-1 border-4">
 
                 <div class="flex items-center justify-between w-full">
                     <h1 class="text-xs lg:text-sm font-semibold capitalize">Salle du personnel</h1>
-                    <button class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
+                    <button
+                        class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -266,13 +226,13 @@
 
 
             <!-- SALLE-ARCHIVE -->
-            <div
-                id="salle-archive"
+            <div id="salle-archive"
                 class=" flex flex-col  p-3 gap-3 not-lg:border-2 row-start-6 -row-end-1 col-start-15 col-end-21 border-4">
 
                 <div class="flex items-center justify-between w-full">
                     <h1 class="text-xs lg:text-sm font-semibold capitalize">Salle d'archive</h1>
-                    <button class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
+                    <button
+                        class="lg:w-10 lg:h-10 w-7 not-lg:text-xs  h-7 bg-orange-700 rounded-full text-black fade-in flex items-center justify-center">
                         <i class="fa-solid fa-plus"></i>
                     </button>
                 </div>
@@ -285,4 +245,5 @@
     </main>
     <script src="./app.js"></script>
 </body>
+
 </html>
