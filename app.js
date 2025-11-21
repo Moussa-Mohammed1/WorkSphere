@@ -37,6 +37,10 @@ showList.addEventListener('click', ()=> {
         list.classList.remove('hidden');
         showList.classList.add('bg-black/20');
     }
+    else{
+        list.classList.add('hidden');
+        showList.classList.remove('bg-black/20');
+    }
 });
 
 const phoneRegex = /^(05|06|07)[0-9]{8}$/;
@@ -163,7 +167,6 @@ function newExp() {
 function closeIT(button){
     const parent = button.closest('.experience-item');
     parent.remove();
-    console.log("close works!");
 }
 
 staffExp.addEventListener('click',(e)=>{
@@ -172,8 +175,6 @@ staffExp.addEventListener('click',(e)=>{
 });
 
 function staffList(s){
-    console.log('lising loged');
-    
      return `
     <div 
         onclick="showThisStaff(${s.id})"
@@ -188,7 +189,6 @@ function staffList(s){
     </div>`;
 };
 function updateList(update){
-    console.log('status?');
     list.innerHTML = '';
     for (let i = 0; i < update.length; i++) {
         if (update[i].currentStatus == "unassigned"){
@@ -290,7 +290,6 @@ function clearForm(){
 
 function checkDuplicate(staff){
     let valid = true ;
-    console.log(workers);
     for (let i = 0; i < workers.length ; i++) {
         if (staff.email === workers[i].email || staff.phone === workers[i].phone) {
             alert('catch you haha !olreadi igzist!');
@@ -299,14 +298,12 @@ function checkDuplicate(staff){
                 setTimeout(() => {
                     clearError(errorClass[1]);
                 }, 10000);
-                console.log('Check Duplicate works! :' + workers[i].email);
             }
             else{
                 showError(errorClass[2], "This informations belong to an existing staff!");
                 setTimeout(() => {
                     clearError(errorClass[2]);
                 }, 10000);
-                console.log('Check Duplicate works! :' + workers[i].phone);
             }
             valid = false ;
         }
@@ -378,7 +375,6 @@ saveBtn.addEventListener('click', (e)=>{
     staff.role = staffRole.value;
     allowedRooms(staff.role ,staff.possibleRoom);
     staff.currentStatus = "unassigned";
-    console.log(staff.possibleRoom);
     staff.image = profilImg.src;
     staff.email = staffEmail.value;
     staff.phone = staffPhone.value;
@@ -387,7 +383,6 @@ saveBtn.addEventListener('click', (e)=>{
     for (let i = 0; i < expArray.length; i++) {
         const item  = expArray[i];
         const startV =  item.querySelector('[name="start-date"]').value;
-        console.log(startV);
         const endV = item.querySelector('[name="end-date"]').value;
         const start = item.querySelector('[name="start-date"]').value.trim();
         const end = item.querySelector('[name="end-date"]').value.trim();
@@ -402,7 +397,7 @@ saveBtn.addEventListener('click', (e)=>{
             showError(closest2, "invalid value, must be a logic start date ");
         
             const closest1 = item.querySelector('[name="end-date"]').nextElementSibling;
-            showError(closest1, "invalid value, must be a logic year(1990-2025)");
+            showError(closest1, "invalid value, must be a logic end date");
             return;
         }
         staff.experiences.unshift({
@@ -414,7 +409,6 @@ saveBtn.addEventListener('click', (e)=>{
         });
         clearError(errorClass);
     }
-    console.log(workers.length);
     workers.push(staff);
     saveToLocalstorage();
     updateList(workers);
@@ -452,13 +446,12 @@ const archive = document.getElementById('salle-archive');
 function ableToEnter(room){
     let listed = "";
     let valid = false;
-    console.log('listing in progress');
     if(workers.length === 0){return};
     for (let i = 0; i < workers.length; i++) {
         const ableStaff = workers[i];
         if(!ableStaff.possibleRoom)continue;
         if (ableStaff.possibleRoom.includes(room) && ableStaff.currentStatus === "unassigned"){
-            console.log(ableStaff);
+
             valid = true;
             listed += `
             <div class="flex items-center justify-center  space-x-5 space-y-5">
@@ -486,14 +479,12 @@ function ableToEnter(room){
             ${listed}
         </div>`;
         document.body.appendChild(ableList);
-        console.log('listed');
     }
     else{
         if (unassignedCount.textContent == 0) {
             showNotification('Unfortunately! There is no staff to assign, add workers first');
         }
         else{
-            console.log()
             showNotification('No unassigned staff able to enter this zone');
         }
     }
@@ -684,7 +675,6 @@ function unassignStaff(id,room){
     let Uroom = room;
     for (let i = 0; i < workers.length; i++) {
         if (workers[i].id === id) {
-            console.log(workers[i].currentRoom);
             workers[i].currentRoom = "";
             workers[i].currentStatus = "unassigned";
             updateRoom(id,Uroom);
@@ -706,7 +696,6 @@ function roomLimitation(){
     for (let i = 0; i < workers.length; i++) {
         const w = workers[i];
         if(w.currentRoom === "personnel"){cntpersonnel++;
-            console.log(cntpersonnel);
         }
         if(w.currentRoom === "conference"){cntconference++;}
         if(w.currentRoom === "reception"){cntreception++;}
@@ -714,15 +703,13 @@ function roomLimitation(){
         if(w.currentRoom === "securite"){cntsecurite++;}
         if(w.currentRoom === "archive"){cntarchive++;}
     }
-    if(cntpersonnel === 0){ console.log(cntpersonnel);}
-    if(cntconference === 0){ console.log(cntpersonnel);}
-    if(cntreception === 0){reception.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    if(cntreception === 0){reception.classList.add('bg-red-500', 'animate-pulse')}
     else{reception.classList.remove('bg-red-500', 'animate-pulse');}
-    if(cntserveures === 0){serveurs.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    if(cntserveures === 0){serveurs.classList.add('bg-red-500', 'animate-pulse')}
     else{serveurs.classList.remove('bg-red-500', 'animate-pulse')}
-    if(cntsecurite === 0){securite.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    if(cntsecurite === 0){securite.classList.add('bg-red-500', 'animate-pulse')}
     else{securite.classList.remove('bg-red-500', 'animate-pulse')}
-    if(cntarchive === 0){archive.classList.add('bg-red-500', 'animate-pulse'); console.log(cntpersonnel);}
+    if(cntarchive === 0){archive.classList.add('bg-red-500', 'animate-pulse')}
     else{archive.classList.remove('bg-red-500', 'animate-pulse')}
     staffInRoomCounter.cntarchive = cntarchive;
     staffInRoomCounter.cntpersonnel = cntpersonnel;
@@ -730,7 +717,6 @@ function roomLimitation(){
     staffInRoomCounter.cntreception = cntreception;
     staffInRoomCounter.cntsecurite = cntsecurite;
     staffInRoomCounter.cntserveures = cntserveures;
-    console.log(staffInRoomCounter);
 }
 document.addEventListener('click',(e)=>{
     if (reception.querySelector('button').contains(e.target)) {
