@@ -1,7 +1,7 @@
 const list =  document.getElementById('unassigned-list');
 const showList = document.getElementById('unassigned-toggle');
 const addStaff = document.getElementById('add-staff');
-const search = document.getElementById("search-staff");
+const sort = document.getElementById("sort-staff");
 const unassignedCount = document.getElementById('number-unassigned');
 const cancelBtn = document.getElementById("cancel");
 const saveBtn = document.getElementById("save");
@@ -33,14 +33,15 @@ updateRooms();
 updateList(workers);
 showList.addEventListener('click', ()=> {
     updateList(workers);
-    list.classList.toggle('hidden');
+    if(list.classList.contains('hidden')){
+        list.classList.remove('hidden');
+        showList.classList.add('bg-black/20');
+    }
 });
 
 const phoneRegex = /^(05|06|07)[0-9]{8}$/;
 const nameRegex = /^[A-Za-z\s]{2,30}$/;
 const emailRegex = /^[^\s.@]+@[^\s.@]+\.[^\s.@]+$/;
-const startDateRegex = /^(199[0-9]|200[0-9]|201[0-9]|202[0-5])$/;
-const endDateRegex = /^((199[0-9]|200[0-9]|201[0-9]|202[0-5])|(present))$/;
 
 function validateDuration(){
     let valid = true;
@@ -173,7 +174,7 @@ function staffList(s){
      return `
     <div 
         onclick="showThisStaff(${s.id})"
-        class=" bg-gray-50 rounded-xl p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+        class=" bg-gray-50 rounded-xl p-4 border-2 shown border-gray-200 hover:border-blue-400 cursor-pointer">
         <div class="flex items-center space-x-3">
             <img src="${s.image}" class="w-12 h-12 bg-linear-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
             <div class="flex-1">
@@ -221,13 +222,14 @@ function showThisStaff(id){
     for (let i = 0; i < shown.experiences.length; i++) {
         let xp = shown.experiences[i];
         shownExp += `
-            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate}-${xp.endDate})</li>
+            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate} | ${xp.endDate})</li>
+            <p class="pl-3 w-120">Description : ${xp.description}</p>
         `
     }
     if(!shownExp){shownExp = `<h1 class="text-2xl not-lg:text-xl text-gray-600">This staff have not experience yet!</h1>`}
     
     const info = document.createElement('div');
-    info.className = ' inset-0 fixed bg-black/50 flex flex-row justify-center items-center'
+    info.className = ' inset-0 fixed bg-black/50 unassigned-card flex flex-row justify-center items-center'
     info.innerHTML = `
     <div class="bg-gray-50 shown rounded-xl w-fit h-fit p-4 border-2 border-blue-400 cursor-pointer shadow-md transition duration-300">
                 <div class="flex items-center space-x-4">
@@ -247,6 +249,10 @@ function showThisStaff(id){
                         ${shownExp}
                     </ul>
                 </div>
+                <!--<div
+                    class="flex justify-end">
+                    <button onclick="fireThisStaff(${shown.id}),closest('.unassigned-card').remove()" class=" capitalize bg-red-500 px-3 py-1 mt-3 text-white font-semibold rounded hover:bg-red-600">Fired?</button>
+                </div>-->
             </div>`
     document.body.appendChild(info);
     const card = info.firstElementChild;
@@ -256,6 +262,14 @@ function showThisStaff(id){
         }
     });
 };
+function fireThisStaff(id){
+    workers =  workers.filter(staff => staff.id !== id);
+    saveToLocalstorage();
+    roomLimitation();
+    updateRooms();
+    updateList(workers);
+    showNotification('Fired succefully!')
+}
 
 function clearForm(){
     staffName.value = "";
@@ -438,7 +452,7 @@ function ableToEnter(room){
             console.log(ableStaff);
             valid = true;
             listed += `
-            <div class="flex items-center space-x-3 space-y-7">
+            <div class="flex items-center justify-center  space-x-5 space-y-5">
                 <img src="${ableStaff.image}" 
                     class="w-20 h-20 border-4 border-blue-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
 
@@ -449,7 +463,7 @@ function ableToEnter(room){
 
                 <button 
                     onclick="assignStaff(${ableStaff.id},'${room}')"
-                    class="px-4 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-amber-800 hover:scale-90 transition">
+                    class="px-3 py-2 bg-orange-500 text-white rounded-lg shadow hover:bg-amber-800 hover:scale-90 transition">
                     Assign
                 </button>
             </div>`;
@@ -459,7 +473,7 @@ function ableToEnter(room){
         const ableList = document.createElement('div');
         ableList.className = 'inset-0  fixed able-list bg-black/50 flex items-center justify-center'
         ableList.innerHTML = `
-        <div class=" bg-gray-50 shown rounded-xl w-fit h-fit p-4 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+        <div class=" bg-gray-50 py-4 px-3 shown rounded-xl w-fit h-fit border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
             ${listed}
         </div>`;
         document.body.appendChild(ableList);
@@ -532,7 +546,7 @@ function assignStaff(id,room){
                         roomLimitation();
                     }
                 }
-            }else{showNotification("this room have reached its max size!");}
+            }else{showNotification("this room have reached its maximum size!");}
             break;
         case "archive":
             if (staffInRoomCounter.cntarchive < 3) {
@@ -543,7 +557,7 @@ function assignStaff(id,room){
                         roomLimitation();
                     }
                 }
-            }else{showNotification("this room have reached its max size!");}
+            }else{showNotification("this room have reached its maximum size!");}
             break;
         case "serveurs": 
             if (staffInRoomCounter.cntserveures < 6) {
@@ -554,7 +568,7 @@ function assignStaff(id,room){
                         roomLimitation();
                     }
                 }
-            }else{showNotification("this room have reached its max size!");}
+            }else{showNotification("this room have reached its maximum size!");}
             break;
         case "securite" :
             if (staffInRoomCounter.cntsecurite < 6) {
@@ -565,7 +579,7 @@ function assignStaff(id,room){
                         roomLimitation();
                     }
                 }
-            }else{showNotification("this room have reached its max size!");}
+            }else{showNotification("this room have reached its maximum size!");}
             break;
         case "conference":
             if (staffInRoomCounter.cntconference < 8) {
@@ -587,7 +601,7 @@ function assignStaff(id,room){
                         roomLimitation();
                     }
                 }
-            }else{showNotification("this room have reached its max size!");}
+            }else{showNotification("this room have reached its maximum size!");}
             break;
         default:
             break;
@@ -604,8 +618,8 @@ function showThisAssigned(id){
     for (let i = 0; i < staff.experiences.length; i++) {
         let xp = staff.experiences[i];
         shownExp += `
-            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate}/${xp.endDate})</li>
-        `
+            <li><span class="font-semibold">${xp.title}</span>- ${xp.company}  (${xp.startDate} | ${xp.endDate})</li>
+            <p class="pl-3 w-120">Description : ${xp.description}</p>`
     }
     if(!shownExp){shownExp = `<h1 class="text-lg text-gray-600">This staff have not experience yet!</h1>`}
     
@@ -644,7 +658,7 @@ function showThisAssigned(id){
 
             <div class="mt-3">
                 <h4 class="font-semibold text-gray-700">Experiences:</h4>
-                <ul class=" text-sm text-gray-600 mt-1">
+                <ul class="list-disc list-inside text-sm text-gray-600 mt-1">
                     ${shownExp}
                 </ul>
             </div>
@@ -729,14 +743,36 @@ document.addEventListener('click',(e)=>{
         ableToEnter("archive");
     }
 })
-search.addEventListener('input',()=>{
-    for (let i = 0; i < workers.length; i++) {
+sort.addEventListener('change',()=>{
+    saveToLocalstorage();
+    updateRooms();
+    updateList(workers);
+    if(sort.value !=="default"){
         list.innerHTML = "";
-        const staff = workers[i];
-        if (staff.nom === search.value) {
-            list.innerHTML = staffList(staff);
+        list.classList.remove('hidden');
+        showList.classList.add('bg-black/20');
+        let selectedRole = [];
+        const empty = `<p class="flex flex-row items-center space-x-1.5 justify-center text-gray-600 "><i class="fa-solid text-xl fa-folder-open"></i> <strong class="text-sm "> No unassigned staff has this role yet !</strong></p>`
+        for (let i = 0; i < workers.length; i++) {
+            const staff = workers[i];
+            if (staff.role === sort.value && staff.currentStatus !== "assigned") {
+                selectedRole.push(staff);
+            }
+        }
+        if(selectedRole.length == 0){list.innerHTML = empty ; return}
+        for (let i = 0; i < selectedRole.length; i++) {
+            const staff = selectedRole[i];
+            list.innerHTML += staffList(staff);
+        }
+    }
+    if(sort.value ==="default" ){
+        list.innerHTML = "";
+        for(let i = 0 ; i < workers.length ; i++){
+            
+            list.innerHTML += staffList(workers[i]);
         }
     }
 })
+saveToLocalstorage();
 updateList(workers);
 window.closeIT = closeIT;
