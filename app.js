@@ -42,6 +42,8 @@ showList.addEventListener('click', ()=> {
 const phoneRegex = /^(05|06|07)[0-9]{8}$/;
 const nameRegex = /^[A-Za-z\s]{2,30}$/;
 const emailRegex = /^[^\s.@]+@[^\s.@]+\.[^\s.@]+$/;
+const startDateRegex = /^(199[0-9]|200[0-9]|201[0-9]|202[0-5])$/;
+const endDateRegex = /^((199[0-9]|200[0-9]|201[0-9]|202[0-5])|(present))$/;
 
 function validateDuration(){
     let valid = true;
@@ -152,6 +154,7 @@ function newExp() {
             placeholder="What would you say about your last experience?"
             class="outline-none ring rounded-lg focus:ring-blue-600 focus:ring-1 w-full p-2 duration-300"
         ></textarea>
+        <p name="empty-exp" class=" text-sm text-red-500"></p>
     `;
 
     experienceForms.appendChild(exp);
@@ -249,10 +252,10 @@ function showThisStaff(id){
                         ${shownExp}
                     </ul>
                 </div>
-                <!--<div
+                <div
                     class="flex justify-end">
-                    <button onclick="fireThisStaff(${shown.id}),closest('.unassigned-card').remove()" class=" capitalize bg-red-500 px-3 py-1 mt-3 text-white font-semibold rounded hover:bg-red-600">Fired?</button>
-                </div>-->
+                    <button onclick="fireThisStaff(${shown.id}); this.closest('.unassigned-card').remove()" class=" capitalize bg-red-500 px-3 py-1 mt-3 text-white font-semibold rounded hover:bg-red-600">Fired?</button>
+                </div>
             </div>`
     document.body.appendChild(info);
     const card = info.firstElementChild;
@@ -268,7 +271,7 @@ function fireThisStaff(id){
     roomLimitation();
     updateRooms();
     updateList(workers);
-    showNotification('Fired succefully!')
+    showNotification('Fired succefully!');
 }
 
 function clearForm(){
@@ -385,14 +388,22 @@ saveBtn.addEventListener('click', (e)=>{
         const item  = expArray[i];
         const startV =  item.querySelector('[name="start-date"]').value;
         console.log(startV);
-        const endV = item.querySelector('[name="end-date"]').value.trim();
+        const endV = item.querySelector('[name="end-date"]').value;
+        const start = item.querySelector('[name="start-date"]').value.trim();
+        const end = item.querySelector('[name="end-date"]').value.trim();
+        const title = item.querySelector('[name="exp-title"]').value.trim();
+        const company = item.querySelector('[name="exp-company"]').value.trim();
+
+        if (!start || !end || !title || !company) {
+            item.querySelector('.empty-exp').textContent = "Fill out this field before saving!" ;return;
+        }
         if (endV < startV ) {
-                const closest2 = item.querySelector('[name="start-date"]').nextElementSibling;
-                showError(closest2, "invalid value, must be a logic start date ");
-           
-                const closest1 = item.querySelector('[name="end-date"]').nextElementSibling;
-                showError(closest1, "invalid value, must be a logic year(1990-2025)");
-                return;
+            const closest2 = item.querySelector('[name="start-date"]').nextElementSibling;
+            showError(closest2, "invalid value, must be a logic start date ");
+        
+            const closest1 = item.querySelector('[name="end-date"]').nextElementSibling;
+            showError(closest1, "invalid value, must be a logic year(1990-2025)");
+            return;
         }
         staff.experiences.unshift({
             title: item.querySelector('[name="exp-title"]').value.trim(),
@@ -428,8 +439,6 @@ cancelBtn.addEventListener('click',()=>{
 for (let i = 0; i < workers.length; i++) {
     workers[i].experiences = sortExperiences(workers[i].experiences);
 }
-console.log('sorted');
-console.log('loged');
 
 
 const reception = document.getElementById('reception');
@@ -768,8 +777,10 @@ sort.addEventListener('change',()=>{
     if(sort.value ==="default" ){
         list.innerHTML = "";
         for(let i = 0 ; i < workers.length ; i++){
+            if (workers[i].currentStatus === "unassigned") {
+                list.innerHTML += staffList(workers[i]);
+            }
             
-            list.innerHTML += staffList(workers[i]);
         }
     }
 })
