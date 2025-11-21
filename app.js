@@ -384,12 +384,10 @@ saveBtn.addEventListener('click', (e)=>{
         const item  = expArray[i];
         const startV =  item.querySelector('[name="start-date"]').value;
         const endV = item.querySelector('[name="end-date"]').value;
-        const start = item.querySelector('[name="start-date"]').value.trim();
-        const end = item.querySelector('[name="end-date"]').value.trim();
         const title = item.querySelector('[name="exp-title"]').value.trim();
         const company = item.querySelector('[name="exp-company"]').value.trim();
 
-        if (!start || !end || !title || !company) {
+        if (!startV || !endV || !title || !company) {
             item.querySelector('.empty-exp').textContent = "Fill out this field before saving!" ;return;
         }
         if (endV < startV ) {
