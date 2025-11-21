@@ -149,7 +149,7 @@ Les zones suivantes doivent être occupées (indication visuelle rouge si vides)
 - Salle d'archives
 
 ## 📸 Captures d'Écran
-<img width="1919" height="1079" alt="Capture" src="https://github.com/user-attachments/assets/33bc87f0-5b1d-4ecb-bc89-b35a13ec7ca7" />
+<img width="1919" height="1079" alt="Capture" src="./images/Capture.png" />
 
 
 ## 📝 Validation
