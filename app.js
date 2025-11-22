@@ -46,27 +46,6 @@ showList.addEventListener('click', ()=> {
 const phoneRegex = /^(05|06|07)[0-9]{8}$/;
 const nameRegex = /^[A-Za-z\s]{2,30}$/;
 const emailRegex = /^[^\s.@]+@[^\s.@]+\.[^\s.@]+$/;
-const startDateRegex = /^(199[0-9]|200[0-9]|201[0-9]|202[0-5])$/;
-const endDateRegex = /^((199[0-9]|200[0-9]|201[0-9]|202[0-5])|(present))$/;
-
-function validateDuration(){
-    let valid = true;
-    if (!startDateRegex.test(document.getElementsByName('start-date').value)) {
-        showError(errorClass[3], "Invalid date, expected a year!");
-        valid = false;
-    }
-    else{
-        clearError(errorClass[3]);
-    }
-    if (!endDateRegex.test(document.getElementsByName('end-date'))) {
-        showError(errorClass[4], "Invalid date, expected a year|present");
-        valid = false;
-    }
-    else{
-        clearError(errorClass[4]);
-    }
-    return valid;
-}
 
 function showError(clss, message){
     clss.textContent = message;
@@ -292,7 +271,6 @@ function checkDuplicate(staff){
     let valid = true ;
     for (let i = 0; i < workers.length ; i++) {
         if (staff.email === workers[i].email || staff.phone === workers[i].phone) {
-            alert('catch you haha !olreadi igzist!');
             if (staff.email === workers[i].email) {
                 showError(errorClass[1], "This informations belong to an existing staff!");
                 setTimeout(() => {
@@ -475,10 +453,15 @@ function ableToEnter(room){
         const ableList = document.createElement('div');
         ableList.className = 'inset-0  fixed able-list bg-black/50 flex items-center justify-center'
         ableList.innerHTML = `
-        <div class=" bg-gray-50 flex flex-col flex-wrap py-4 px-3 shown rounded-xl h-4/5 space-x-1.5 border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
+        <div class=" bg-gray-50 overflow-y-scroll py-4 px-3 shown rounded-xl w-fit h-4/5 [scrollbar-width:none] border-2 border-gray-200 hover:border-blue-400 cursor-pointer">
             ${listed}
         </div>`;
         document.body.appendChild(ableList);
+        document.addEventListener('click',(e)=>{
+            if (!ableList.contains(e.target)) {
+                ableList.remove();
+            }
+        })
     }
     else{
         if (unassignedCount.textContent == 0) {
@@ -738,8 +721,6 @@ document.addEventListener('click',(e)=>{
         ableToEnter("archive");
     }
 })
-console.log(workers);
-
 sort.addEventListener('change',()=>{
     saveToLocalstorage();
     updateRooms();
