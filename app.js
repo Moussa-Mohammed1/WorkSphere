@@ -29,7 +29,23 @@ saveToLocalstorage();
 function saveToLocalstorage(){
  localStorage.setItem('workers',JSON.stringify(workers));
 }
+
+//Fonction qui mettre a jour tous les salle apres chaque assignement 
+// assign fuction is : assignStaff
+// unassign function is  : unassignStaff
+// update list fonction is  : updateList
+// update one room function is : updateRoom
+// check duplicate staff function is : CheckDuplicate
+// update all rooms function is : updateRooms
+// sort experiences function is : sortExperiences
+// show unassigned staff function is : showThisStaff
+// show assigned staff function is : showThisassigned
+// staff allowed rooms function is : allowedRooms
+// room limitation function is : roomLimitation
+
 updateRooms();
+
+// fonction qui mettre a jour la liste de non assigné immediatement
 updateList(workers);
 showList.addEventListener('click', ()=> {
     updateList(workers);
@@ -43,16 +59,24 @@ showList.addEventListener('click', ()=> {
     }
 });
 
+// les expression regex de validation des champs de formulaire
+
 const phoneRegex = /^(05|06|07)[0-9]{8}$/;
 const nameRegex = /^[A-Za-z\s]{2,30}$/;
 const emailRegex = /^[^\s.@]+@[^\s.@]+\.[^\s.@]+$/;
 
+// fonction de personalisation des erreurs en utilise des vides <p></p>
+
 function showError(clss, message){
     clss.textContent = message;
 }
+
+// fonction qui mettre le contenu des paragraph vide apres chaque remplissage 
 function clearError(clss){
     clss.textContent = "";
 }
+
+// focntion de confirmation du validation en retournent true or false 
 
 function validateForm() {
     let valid = true;
@@ -84,6 +108,8 @@ function validateForm() {
 }
 
 const experienceForms = document.getElementById('experiences');
+
+// template du formulaire d'experiences 
 
 function newExp() {
     const exp = document.createElement('div');
@@ -153,6 +179,7 @@ staffExp.addEventListener('click',(e)=>{
     newExp();
 });
 
+// template pour staff en unassigned liste
 function staffList(s){
      return `
     <div 
@@ -167,6 +194,8 @@ function staffList(s){
         </div>
     </div>`;
 };
+
+// fonction qui mettre a jour la liste apres l'assignement
 function updateList(update){
     list.innerHTML = '';
     for (let i = 0; i < update.length; i++) {
@@ -201,6 +230,7 @@ function showThisStaff(id){
     
     const shown = workers.find(staff => staff.id === id);
     let shownExp = "";
+    // boucler sur les experiences pour tous les affichers dans l staff card 
     for (let i = 0; i < shown.experiences.length; i++) {
         let xp = shown.experiences[i];
         shownExp += `
@@ -244,6 +274,7 @@ function showThisStaff(id){
         }
     });
 };
+
 function fireThisStaff(id){
     workers =  workers.filter(staff => staff.id !== id);
     saveToLocalstorage();
@@ -253,6 +284,7 @@ function fireThisStaff(id){
     showNotification('Fired succefully!');
 }
 
+// mettre les champs du formulaire vide pour ajouter de nouveau 
 function clearForm(){
     staffName.value = "";
     staffPhone.value = "";
@@ -267,6 +299,7 @@ function clearForm(){
     }
 };
 
+// fonction qui verifier le cas du doublons
 function checkDuplicate(staff){
     let valid = true ;
     for (let i = 0; i < workers.length ; i++) {
@@ -330,6 +363,8 @@ function allowedRooms(role, allowed){
     return allowed;
 }
 
+// tableau des experiences
+
 const expArray = document.getElementsByClassName('experience-item');
 saveBtn.addEventListener('click', (e)=>{
     let staff = {
@@ -391,6 +426,8 @@ saveBtn.addEventListener('click', (e)=>{
     modal.classList.add('hidden');
     clearForm();
 });
+// image par defaut en cas d'absence d'un url entré
+
 imgUrl.addEventListener('input',()=>{
     if (imgUrl.value) {
         profilImg.src = imgUrl.value;
@@ -418,6 +455,7 @@ const securite = document.getElementById('salle-securite');
 const personnel = document.getElementById('salle-personnel');
 const archive = document.getElementById('salle-archive');
 
+// afficher seulement les staffs able d'entrer d'une salle 
 
 function ableToEnter(room){
     let listed = "";
@@ -472,6 +510,9 @@ function ableToEnter(room){
         }
     }
 }
+
+// fonction de personalisation d'un message a l'utilisateur 
+
 function showNotification(message) {
     const notification = document.createElement('div');
     notification.className = `fixed notification px-3 py-3 w-fit hide rounded-lg bg-red-500 font-semibold text-white z-50`;
@@ -481,6 +522,8 @@ function showNotification(message) {
         notification.remove();
     }, 3000);
 }
+
+// template lors la clique d'une staff assigné
 
 function staffinRoom(s){
     return  `
@@ -518,6 +561,9 @@ function updateRoom(id, room) {
     }
     roomLimitation();
 }
+
+// fonction qui verifie a chaque foie l'autorisation d'entré , ou le max size atteinte
+
 function assignStaff(id,room){
     switch (room) {
         case "personnel":
@@ -595,6 +641,9 @@ function assignStaff(id,room){
     saveToLocalstorage();
     document.getElementsByClassName('able-list')[0].remove();
 };
+
+//template pour afficher le nouveau cart du staff assigné
+
 function showThisAssigned(id){
     let staff = workers.find(staff => staff.id === id);
     let shownExp = "";
@@ -654,6 +703,8 @@ function showThisAssigned(id){
         }
     });
 }
+
+//fonction pour mettre le staff unassigned
 function unassignStaff(id,room){
     let Uroom = room;
     for (let i = 0; i < workers.length; i++) {
@@ -721,6 +772,8 @@ document.addEventListener('click',(e)=>{
         ableToEnter("archive");
     }
 })
+
+// fonction du trie des staff par rapport a la selection de l'utilisateur
 sort.addEventListener('change',()=>{
     saveToLocalstorage();
     updateRooms();
