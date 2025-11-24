@@ -261,10 +261,10 @@ function showThisStaff(id){
                         ${shownExp}
                     </ul>
                 </div>
-                <div
+                <!--<div
                     class="flex justify-end">
                     <button onclick="fireThisStaff(${shown.id}); this.closest('.unassigned-card').remove()" class=" capitalize bg-red-500 px-3 py-1 mt-3 text-white font-semibold rounded hover:bg-red-600">Fired?</button>
-                </div>
+                </div>-->
             </div>`
     document.body.appendChild(info);
     const card = info.firstElementChild;
@@ -275,14 +275,7 @@ function showThisStaff(id){
     });
 };
 
-function fireThisStaff(id){
-    workers =  workers.filter(staff => staff.id !== id);
-    saveToLocalstorage();
-    roomLimitation();
-    updateRooms();
-    updateList(workers);
-    showNotification('Fired succefully!');
-}
+//
 
 // mettre les champs du formulaire vide pour ajouter de nouveau 
 function clearForm(){
